@@ -33,13 +33,10 @@ jobs:
             - run:
                   name: Deploy helm chart
                   command: |
-                      export RELEASE_HASH=$CIRCLE_SHA1
-                      export RELEASE_DATE=`date "+%d. %b %Y kl. %H.%M"`
-
                       helm upgrade --install "admin-frontend" \
                           --set image="dronehandelen/frontend-admin:${CIRCLE_SHA1}" \
-                          --set config.release.hash="$RELEASE_HASH" \
-                          --set config.release.date="$RELEASE_DATE" \
+                          --set config.release.hash="$CIRCLE_SHA1" \
+                          --set config.release.date=`date "+%d. %b %Y kl. %H.%M"` \
                           --namespace ${NAMESPACE} \
                           ./chart
 
