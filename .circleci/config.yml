@@ -36,7 +36,7 @@ jobs:
                       export RELEASE_HASH=$CIRCLE_SHA1
                       export RELEASE_DATE=`date "+%d. %b %Y kl. %H.%M"`
 
-                      helm upgrade --install admin-frontend \
+                      helm upgrade --install "admin-frontend" \
                           --set image="dronehandelen/frontend-admin:${CIRCLE_SHA1}" \
                           --set config.release.hash="$RELEASE_HASH" \
                           --set config.release.date="$RELEASE_DATE" \
