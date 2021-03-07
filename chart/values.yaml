@@ -1,0 +1,8 @@
+replicaCount: 1
+name: admin-frontend
+image: smth
+config:
+    baseDomain: admin.dronehandelen.no
+    release:
+        hash: ""
+        date: ""

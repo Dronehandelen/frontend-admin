@@ -1,0 +1,15 @@
+@import '../../../../styles/colors';
+
+.imageCard {
+    cursor: pointer;
+    border: 3px solid transparent;
+    border-radius: 5px;
+
+    > img {
+        max-width: 100%;
+    }
+
+    &.selected {
+        border: 3px solid $main;
+    }
+}
