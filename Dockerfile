@@ -1,7 +1,7 @@
 FROM node:14 as build
 WORKDIR /app
 COPY . .
-RUN mkdir -p build; rm /app/build/static/**/*.map
+RUN mkdir -p build; rm -f /app/build/static/**/*.map
 
 FROM nginx:alpine as prod
 WORKDIR /usr/share/nginx/html
