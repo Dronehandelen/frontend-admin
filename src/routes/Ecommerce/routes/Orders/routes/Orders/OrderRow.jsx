@@ -6,6 +6,7 @@ import { Link, useHistory, useLocation } from 'react-router-dom';
 import { Spinner } from 'reactstrap';
 import mutationRequest from '../../../../../../helpers/mutationRequest.js';
 import { gql, useMutation } from '@apollo/client';
+import moment from 'moment';
 
 const CAPTURE_ORDER_FUNDS = gql`
     mutation CaptureOrderFunds($orderId: Int!) {
@@ -24,12 +25,22 @@ const SEND_ORDER_TRACKING_EMAIL = gql`
     }
 `;
 
+const ORDER_RECEIVED_BY_CUSTOMER_MUTATION = gql`
+    mutation OrderReceivedByCustomer($orderId: Int!, $date: DateTime!) {
+        orderReceivedByCustomer(orderId: $orderId, date: $date) {
+            id
+            packageReceivedAt
+        }
+    }
+`;
+
 const OrderRow = ({ order, refetch }) => {
     const history = useHistory();
     const location = useLocation();
 
     const [captureOrderFunds] = useMutation(CAPTURE_ORDER_FUNDS);
     const [sendOrderTrackingEmail] = useMutation(SEND_ORDER_TRACKING_EMAIL);
+    const [markAsReceived] = useMutation(ORDER_RECEIVED_BY_CUSTOMER_MUTATION);
 
     const [
         captureOrderFundsStatus,
@@ -44,6 +55,12 @@ const OrderRow = ({ order, refetch }) => {
         sendOrderTrackingEmailStatus,
         setSendOrderTrackingEmailStatus,
     ] = React.useState({
+        error: false,
+        loading: false,
+        success: false,
+    });
+
+    const [markAsReceivedStatus, setMarkAsReceivedStatus] = React.useState({
         error: false,
         loading: false,
         success: false,
@@ -82,7 +99,8 @@ const OrderRow = ({ order, refetch }) => {
             <td>{status.text}</td>
             <td>
                 {captureOrderFundsStatus.loading ||
-                sendOrderTrackingEmailStatus.loading ? (
+                sendOrderTrackingEmailStatus.loading ||
+                markAsReceivedStatus.loading ? (
                     <Spinner />
                 ) : (
                     <>
@@ -123,6 +141,27 @@ const OrderRow = ({ order, refetch }) => {
                                     }}
                                 >
                                     Send sporing e-post
+                                </Link>
+                            </div>
+                        )}
+                        {status.canMarkAsReceived && (
+                            <div>
+                                <Link
+                                    to="#"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        mutationRequest(
+                                            setMarkAsReceivedStatus,
+                                            markAsReceived,
+                                            {
+                                                orderId: order.id,
+                                                date: moment().toISOString(),
+                                            },
+                                            () => refetch()
+                                        );
+                                    }}
+                                >
+                                    Marker som motatt
                                 </Link>
                             </div>
                         )}

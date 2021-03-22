@@ -1,5 +1,6 @@
 import appConfig from '../../../../../../config/app.js';
 import orderStatus from '../../../../../../constants/orderStatus.js';
+import moment from 'moment';
 
 const getOrderStatus = (order) => {
     if (order.status === orderStatus.CANCELLED) {
@@ -54,6 +55,11 @@ const getOrderStatus = (order) => {
             text: isBring
                 ? 'Kunden venter på pakken.'
                 : 'Kunden må hente pakken sin.',
+            canMarkAsReceived: isBring
+                ? moment(order.succeededAt).isBefore(
+                      moment().subtract(1, 'month')
+                  )
+                : true,
         };
     }
 

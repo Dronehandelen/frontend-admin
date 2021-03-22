@@ -43,7 +43,10 @@ const RECREATE_ORDER_DOCUMENTS_MUTATION = gql`
 
 const ORDER_RECEIVED_BY_CUSTOMER_MUTATION = gql`
     mutation OrderReceivedByCustomer($orderId: Int!, $date: DateTime!) {
-        orderReceivedByCustomer(orderId: $orderId, date: $date)
+        orderReceivedByCustomer(orderId: $orderId, date: $date) {
+            id
+            packageReceivedAt
+        }
     }
 `;
 
