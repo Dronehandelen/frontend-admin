@@ -49,9 +49,6 @@ const OrderDetails = ({
         ? order.deliveryInfo.bring.trackingCode
         : '';
     const [trackingCode, setTrackingCode] = React.useState('');
-    const [receivedDate, setReceivedDate] = React.useState(
-        moment().toISOString()
-    );
 
     React.useEffect(() => setTrackingCode(orderTrackingCode || ''), [
         orderTrackingCode,
@@ -469,10 +466,6 @@ const OrderDetails = ({
                                     <Card>
                                         <CardHeader>Leveringsdato</CardHeader>
                                         <CardBody>
-                                            <p>
-                                                Dato for når kunden mottok
-                                                pakken
-                                            </p>
                                             {order.packageReceivedAt && (
                                                 <p>
                                                     Du har allerede satt dato{' '}
@@ -482,26 +475,16 @@ const OrderDetails = ({
                                                 </p>
                                             )}
                                             <FormGroup>
-                                                <Input
-                                                    type="datetime-local"
-                                                    value={receivedDate}
-                                                    onChange={(e) =>
-                                                        setReceivedDate(
-                                                            e.target.value
+                                                <Button
+                                                    onClick={() =>
+                                                        onOrderReceivedByCustomer(
+                                                            moment().toISOString()
                                                         )
                                                     }
-                                                />
+                                                >
+                                                    Marker som motatt
+                                                </Button>
                                             </FormGroup>
-                                            <Button
-                                                color="primary"
-                                                onClick={() =>
-                                                    onOrderReceivedByCustomer(
-                                                        receivedDate
-                                                    )
-                                                }
-                                            >
-                                                Sett ny dato
-                                            </Button>
                                             {orderReceivedByCustomerStatus.success && (
                                                 <Alert
                                                     className="mt-2"
