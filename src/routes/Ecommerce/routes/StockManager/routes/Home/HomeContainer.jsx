@@ -12,6 +12,24 @@ const query = gql`
             estimatedLostRevenue(days: 60) {
                 total
             }
+            aEstinatedLostRevenue: estimatedLostRevenue(
+                days: 60
+                abcCategory: A
+            ) {
+                total
+            }
+            bEstinatedLostRevenue: estimatedLostRevenue(
+                days: 60
+                abcCategory: B
+            ) {
+                total
+            }
+            cEstinatedLostRevenue: estimatedLostRevenue(
+                days: 60
+                abcCategory: C
+            ) {
+                total
+            }
         }
     }
 `;

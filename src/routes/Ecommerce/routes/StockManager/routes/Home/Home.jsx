@@ -1,15 +1,17 @@
 import React from 'react';
-import {
-    Breadcrumb,
-    BreadcrumbItem,
-    Col,
-    Container,
-    Row,
-    Table,
-} from 'reactstrap';
+import { Breadcrumb, BreadcrumbItem, Col, Container, Row } from 'reactstrap';
 import { Link, useHistory } from 'react-router-dom';
 import appConfig from '../../../../../../config/app.js';
 import formatPrice from '../../../../../../helpers/formatPrice.js';
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Paper,
+} from '@material-ui/core';
 
 const Home = ({ suppliers, currentUrl }) => {
     const history = useHistory();
@@ -31,41 +33,76 @@ const Home = ({ suppliers, currentUrl }) => {
             </Row>
             <Row>
                 <Col>
-                    <Table hover>
-                        <thead>
-                            <tr>
-                                <th>Leverandør</th>
-                                <th>Estimert tap de neste 60 dagene</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {suppliers
-                                .sort(
-                                    (a, b) =>
-                                        b.estimatedLostRevenue.total -
-                                        a.estimatedLostRevenue.total
-                                )
-                                .map((supplier) => (
-                                    <tr
-                                        key={supplier.id}
-                                        onClick={() =>
-                                            history.push(
-                                                currentUrl + '/' + supplier.id
-                                            )
-                                        }
-                                    >
-                                        <td>{supplier.name}</td>
-                                        <td>
-                                            kr{' '}
-                                            {formatPrice(
-                                                supplier.estimatedLostRevenue
-                                                    .total
-                                            )}
-                                        </td>
-                                    </tr>
-                                ))}
-                        </tbody>
-                    </Table>
+                    <TableContainer component={Paper}>
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>Leverandør</TableCell>
+                                    <TableCell>Totalt</TableCell>
+                                    <TableCell>Kategori A</TableCell>
+                                    <TableCell>Kategori B</TableCell>
+                                    <TableCell>Kategori C</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {suppliers
+                                    .sort(
+                                        (a, b) =>
+                                            b.estimatedLostRevenue.total -
+                                            a.estimatedLostRevenue.total
+                                    )
+                                    .map((supplier) => (
+                                        <TableRow
+                                            hover
+                                            key={supplier.id}
+                                            onClick={() =>
+                                                history.push(
+                                                    currentUrl +
+                                                        '/' +
+                                                        supplier.id
+                                                )
+                                            }
+                                        >
+                                            <TableCell>
+                                                {supplier.name}
+                                            </TableCell>
+                                            <TableCell>
+                                                kr{' '}
+                                                {formatPrice(
+                                                    supplier
+                                                        .estimatedLostRevenue
+                                                        .total
+                                                )}
+                                            </TableCell>
+                                            <TableCell>
+                                                kr{' '}
+                                                {formatPrice(
+                                                    supplier
+                                                        .aEstinatedLostRevenue
+                                                        .total
+                                                )}
+                                            </TableCell>
+                                            <TableCell>
+                                                kr{' '}
+                                                {formatPrice(
+                                                    supplier
+                                                        .bEstinatedLostRevenue
+                                                        .total
+                                                )}
+                                            </TableCell>
+                                            <TableCell>
+                                                kr{' '}
+                                                {formatPrice(
+                                                    supplier
+                                                        .cEstinatedLostRevenue
+                                                        .total
+                                                )}
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
                 </Col>
             </Row>
         </Container>
