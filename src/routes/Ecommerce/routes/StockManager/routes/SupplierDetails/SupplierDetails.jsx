@@ -1,15 +1,17 @@
 import React from 'react';
-import {
-    Breadcrumb,
-    BreadcrumbItem,
-    Col,
-    Container,
-    Row,
-    Table,
-} from 'reactstrap';
+import { Breadcrumb, BreadcrumbItem, Col, Container, Row } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import appConfig from '../../../../../../config/app.js';
 import formatPrice from '../../../../../../helpers/formatPrice.js';
+import {
+    Paper,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Table,
+} from '@material-ui/core';
 
 const SupplierDetails = ({ supplier }) => {
     return (
@@ -21,10 +23,12 @@ const SupplierDetails = ({ supplier }) => {
                             <Link to="/">{appConfig.appName}</Link>
                         </BreadcrumbItem>
                         <BreadcrumbItem active>
-                            <Link to="/admin">Admin</Link>
+                            <Link to="/">Admin</Link>
                         </BreadcrumbItem>
                         <BreadcrumbItem active>
-                            <Link to="/admin/stock-manager">Stock manager</Link>
+                            <Link to="/ecommerce/stock-manager">
+                                Stock manager
+                            </Link>
                         </BreadcrumbItem>
                         <BreadcrumbItem active>{supplier.name}</BreadcrumbItem>
                     </Breadcrumb>
@@ -41,69 +45,92 @@ const SupplierDetails = ({ supplier }) => {
             </Row>
             <Row>
                 <Col>
-                    <Table hover>
-                        <thead>
-                            <tr>
-                                <th>Produkt id</th>
-                                <th>Produktnavn</th>
-                                <th>Estimert tap neste 60 dager</th>
-                                <th>Antall på lager</th>
-                                <th colSpan="2">
-                                    Antatt solgte enheter neste 60 dager
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {supplier.estimatedLostRevenue.perProduct.map(
-                                (estimatedLostRevenueForProduct) => (
-                                    <tr>
-                                        <td>
-                                            {
-                                                estimatedLostRevenueForProduct
-                                                    .product.id
-                                            }
-                                        </td>
-                                        <td>
-                                            {
-                                                estimatedLostRevenueForProduct
-                                                    .product.title
-                                            }
-                                        </td>
-                                        <td>
-                                            kr{' '}
-                                            {formatPrice(
-                                                estimatedLostRevenueForProduct.total
-                                            )}
-                                        </td>
-                                        <td>
-                                            {
-                                                estimatedLostRevenueForProduct
-                                                    .product.stock
-                                            }
-                                        </td>
-                                        <td>
-                                            {(
-                                                estimatedLostRevenueForProduct.estimatedSalesPerHour *
-                                                24 *
-                                                60
-                                            ).toFixed(2)}
-                                        </td>
-                                        <td className="text-right">
-                                            <Link
-                                                to={
-                                                    '/ecommerce/products/' +
+                    <TableContainer component={Paper}>
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>Produkt id</TableCell>
+                                    <TableCell>Produktnavn</TableCell>
+                                    <TableCell>ABC Kategori</TableCell>
+                                    <TableCell>
+                                        Estimert tap neste 60 dager
+                                    </TableCell>
+                                    <TableCell>Antall på lager</TableCell>
+                                    <TableCell colSpan="2">
+                                        Antatt solgte enheter neste 60 dager
+                                    </TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {supplier.estimatedLostRevenue.perProduct.map(
+                                    (estimatedLostRevenueForProduct) => {
+                                        const abcCateogryLabel = estimatedLostRevenueForProduct.product.labels.find(
+                                            (label) =>
+                                                label.name ===
+                                                'SYSTEM_abcAnalysis'
+                                        );
+                                        return (
+                                            <TableRow
+                                                hover
+                                                key={
                                                     estimatedLostRevenueForProduct
                                                         .product.id
                                                 }
                                             >
-                                                Gå til
-                                            </Link>
-                                        </td>
-                                    </tr>
-                                )
-                            )}
-                        </tbody>
-                    </Table>
+                                                <TableCell>
+                                                    {
+                                                        estimatedLostRevenueForProduct
+                                                            .product.id
+                                                    }
+                                                </TableCell>
+                                                <TableCell>
+                                                    {
+                                                        estimatedLostRevenueForProduct
+                                                            .product.title
+                                                    }
+                                                </TableCell>
+                                                <TableCell>
+                                                    {abcCateogryLabel
+                                                        ? abcCateogryLabel.value
+                                                        : 'C'}
+                                                </TableCell>
+                                                <TableCell>
+                                                    kr{' '}
+                                                    {formatPrice(
+                                                        estimatedLostRevenueForProduct.total
+                                                    )}
+                                                </TableCell>
+                                                <TableCell>
+                                                    {
+                                                        estimatedLostRevenueForProduct
+                                                            .product.stock
+                                                    }
+                                                </TableCell>
+                                                <TableCell>
+                                                    {(
+                                                        estimatedLostRevenueForProduct.estimatedSalesPerHour *
+                                                        24 *
+                                                        60
+                                                    ).toFixed(2)}
+                                                </TableCell>
+                                                <TableCell align="right">
+                                                    <Link
+                                                        to={
+                                                            '/ecommerce/products/' +
+                                                            estimatedLostRevenueForProduct
+                                                                .product.id
+                                                        }
+                                                    >
+                                                        Gå til
+                                                    </Link>
+                                                </TableCell>
+                                            </TableRow>
+                                        );
+                                    }
+                                )}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
                 </Col>
             </Row>
         </Container>

@@ -19,6 +19,10 @@ const query = gql`
                         title
                         price
                         stock
+                        labels {
+                            name
+                            value
+                        }
                     }
                 }
             }
