@@ -1,6 +1,6 @@
 import React from 'react';
 import cn from 'classnames';
-import { Alert, Breadcrumb, BreadcrumbItem, Col, Input, Row } from 'reactstrap';
+import { Alert, Breadcrumb, BreadcrumbItem, Col, Row } from 'reactstrap';
 import formatPrice from '../../../../../../helpers/formatPrice.js';
 import ProductHelper from '../../../../../../helpers/product.js';
 import { Link } from 'react-router-dom';
