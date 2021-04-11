@@ -150,6 +150,25 @@ const Sidebar = () => {
                     </LinkBlockLink>
                 </LinkBlockList>
             </LinkBlock>
+            <MainLink
+                onClick={() => {
+                    setCurrentlyExpandedName(
+                        currentlyExpandedName === 'stats' ? null : 'stats'
+                    );
+                }}
+                to="/stats"
+            >
+                Stats
+            </MainLink>
+            <LinkBlock>
+                <LinkBlockList
+                    className={cn({
+                        expanded: currentlyExpandedName === 'stats',
+                    })}
+                >
+                    <LinkBlockLink to="/stats/searches">Søk</LinkBlockLink>
+                </LinkBlockList>
+            </LinkBlock>
             <Separator />
         </StyledSidebar>
     );

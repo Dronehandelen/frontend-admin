@@ -4,6 +4,7 @@ import AuthContext from '../contexts/auth';
 import Login from './Login';
 import Dashboard from './Dashboard';
 import Ecommerce from './Ecommerce';
+import Stats from './Stats';
 import Page from '../components/Page/Page.jsx';
 
 const Index = () => {
@@ -28,6 +29,7 @@ const Index = () => {
             <Switch>
                 <Route path="/dashboard" component={Dashboard} />
                 <Route path="/ecommerce" component={Ecommerce} />
+                <Route path="/stats" component={Stats} />
                 <Redirect to="/dashboard" />
             </Switch>
         </Page>

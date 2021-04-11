@@ -2,6 +2,8 @@ import React from 'react';
 import * as Sentry from '@sentry/react';
 import { ApolloProvider } from '@apollo/client';
 import { BrowserRouter } from 'react-router-dom';
+import { MuiPickersUtilsProvider } from '@material-ui/pickers';
+import MomentUtils from '@date-io/moment';
 
 import Routes from './routes';
 import AuthProvider from './containers/AuthProvider';
@@ -14,6 +16,7 @@ import ScrollToTop from './components/ScrollToTop.jsx';
 import { Col, Container, Row } from 'reactstrap';
 import ApolloClient from './helpers/apolloClient.js';
 import { ThemeProvider } from './containers/ThemeProvider.jsx';
+import moment from 'moment';
 
 const apolloClient = new ApolloClient();
 
@@ -35,7 +38,12 @@ const App = () => (
                 <ApolloProvider client={apolloClient.apolloClient}>
                     <ScrollToTop>
                         <AuthProvider>
-                            <Routes />
+                            <MuiPickersUtilsProvider
+                                utils={MomentUtils}
+                                libInstance={moment}
+                            >
+                                <Routes />
+                            </MuiPickersUtilsProvider>
                         </AuthProvider>
                     </ScrollToTop>
                 </ApolloProvider>
