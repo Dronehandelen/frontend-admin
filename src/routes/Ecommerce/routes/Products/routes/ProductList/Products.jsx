@@ -1,93 +1,36 @@
 import React from 'react';
 import cn from 'classnames';
-import {
-    Alert,
-    Breadcrumb,
-    BreadcrumbItem,
-    Button,
-    Col,
-    Container,
-    Input,
-    Row,
-    Table,
-} from 'reactstrap';
+import { Alert, Breadcrumb, BreadcrumbItem, Col, Input, Row } from 'reactstrap';
 import formatPrice from '../../../../../../helpers/formatPrice.js';
 import ProductHelper from '../../../../../../helpers/product.js';
-import { Link, useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import DefaultHookQuery from '../../../../../../containers/DefaultHookQuery.jsx';
-import { useDebounce } from 'moment-hooks';
-import { gql, useMutation } from '@apollo/client';
-import usePaginatedQuery from '../../../../../../hooks/usePaginatedQuery.js';
-import Card from '../../../../../../components/Card.jsx';
+import {
+    Box,
+    Button,
+    Container,
+    Grid,
+    Paper,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    TextField,
+} from '@material-ui/core';
 
-const FEATURE_PRODUCT = gql`
-    mutation FeatureProduct($productId: Int!) {
-        featureProduct(productId: $productId)
-    }
-`;
-
-const GET_PRODUCTS = gql`
-    query GetProducts(
-        $filters: ProductFilters
-        $pagination: PaginationInput!
-        $orderBy: String!
-    ) {
-        products(
-            filters: $filters
-            pagination: $pagination
-            orderBy: $orderBy
-        ) {
-            pageInfo {
-                endCursor
-                hasNextPage
-            }
-            edges {
-                node {
-                    alias
-                    id
-                    description
-                    shortDescription
-                    originalPrice
-                    price
-                    title
-                    isPublished
-                    stock
-                    createdAt
-                    images {
-                        fileId
-                        url
-                    }
-                    primaryImage {
-                        fileId
-                        url
-                    }
-                    brand {
-                        id
-                        name
-                    }
-                    stars {
-                        rating
-                        count
-                    }
-                    competitorPrices {
-                        competitorId
-                        price
-                    }
-                }
-            }
-        }
-    }
-`;
-
-const Products = ({ match }) => {
-    const history = useHistory();
-    const [featureProduct] = useMutation(FEATURE_PRODUCT);
-    const [featuredTitle, setFeaturedTitle] = React.useState(null);
-    const [search, setSearch] = React.useState('');
-    const debouncedSearch = useDebounce(search, 500);
-
+const Products = ({
+    match,
+    queryData,
+    search,
+    setSearch,
+    featureProduct,
+    featuredTitle,
+    history,
+}) => {
     return (
-        <Container fluid>
+        <Container>
             <Row>
                 <Col>
                     <Breadcrumb className="pt-3">
@@ -101,198 +44,201 @@ const Products = ({ match }) => {
                     </Breadcrumb>
                 </Col>
             </Row>
-            <Row>
-                <Col>
-                    <Card>
-                        <div>
-                            <Button
-                                className="mb-2"
-                                tag={Link}
-                                to={`${match.path}/new`}
-                            >
-                                Legg til
-                            </Button>
-                            {featuredTitle && (
-                                <Alert color="success">
-                                    Successfully featured {featuredTitle}
-                                </Alert>
-                            )}
-                        </div>
-                        <div className="mb-2">
-                            <Input
-                                placeholder="Søk"
-                                className="w-100"
-                                value={search}
-                                onChange={(e) => setSearch(e.target.value)}
-                            />
-                        </div>
-                        <DefaultHookQuery
-                            queryHookData={usePaginatedQuery(
-                                GET_PRODUCTS,
-                                'products',
-                                {
-                                    filters: {
-                                        onlyPublished: false,
-                                        search: debouncedSearch,
-                                        shouldShowPackages: true,
-                                    },
-                                },
-                                {
-                                    count: 20,
-                                },
-                                debouncedSearch.length === 0
-                                    ? 'id'
-                                    : 'searchRank'
-                            )}
-                        >
-                            {({ data, fetchMore }) => (
-                                <>
-                                    <Table hover>
-                                        <thead>
-                                            <tr>
-                                                <th>Tittel</th>
-                                                <th>Pris</th>
-                                                <th>Pris på tilbud</th>
-                                                <th>Elefun pris</th>
-                                                <th>Publisert</th>
-                                                <th>Antall på lager</th>
-                                                <th>Jobber</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {data.products.edges
-                                                .map((edge) => edge.node)
-                                                .map((product) => {
-                                                    const wrappedProduct = ProductHelper(
-                                                        product
-                                                    );
-                                                    const expectedPrice = wrappedProduct.expectedPriceBasedOnCompetitors();
-                                                    const elefunPrice = wrappedProduct.competitorPrice(
-                                                        1
-                                                    );
+            <Grid container>
+                <Grid item xs={12}>
+                    <Paper component={Box}>
+                        <Box padding={2}>
+                            <Box marginBottom={2}>
+                                <Button
+                                    color="primary"
+                                    variant="contained"
+                                    className="mb-2"
+                                    tag={Link}
+                                    to={`${match.path}/new`}
+                                >
+                                    Legg til ny produkt
+                                </Button>
+                            </Box>
+                            <Box marginBottom={2}>
+                                <TextField
+                                    label="Søk"
+                                    className="w-100"
+                                    value={search}
+                                    onChange={(e) => setSearch(e.target.value)}
+                                />
+                                {featuredTitle && (
+                                    <Alert color="success">
+                                        Successfully featured {featuredTitle}
+                                    </Alert>
+                                )}
+                            </Box>
+                        </Box>
+                        <TableContainer>
+                            <Table>
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell>Tittel</TableCell>
+                                        <TableCell>Pris</TableCell>
+                                        <TableCell>Pris på tilbud</TableCell>
+                                        <TableCell>Elefun pris</TableCell>
+                                        <TableCell>Publisert</TableCell>
+                                        <TableCell>Antall på lager</TableCell>
+                                        <TableCell>Jobber</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <DefaultHookQuery queryHookData={queryData}>
+                                    {({ data, fetchMore }) => (
+                                        <>
+                                            <TableBody>
+                                                {data.products.edges
+                                                    .map((edge) => edge.node)
+                                                    .map((product) => {
+                                                        const wrappedProduct = ProductHelper(
+                                                            product
+                                                        );
+                                                        const expectedPrice = wrappedProduct.expectedPriceBasedOnCompetitors();
+                                                        const elefunPrice = wrappedProduct.competitorPrice(
+                                                            1
+                                                        );
 
-                                                    const isUnexpectedPrice =
-                                                        expectedPrice &&
-                                                        expectedPrice !==
-                                                            product.originalPrice;
+                                                        const isUnexpectedPrice =
+                                                            expectedPrice &&
+                                                            expectedPrice !==
+                                                                product.originalPrice;
 
-                                                    const isExpectedPrice =
-                                                        expectedPrice &&
-                                                        expectedPrice ===
-                                                            product.originalPrice;
+                                                        const isExpectedPrice =
+                                                            expectedPrice &&
+                                                            expectedPrice ===
+                                                                product.originalPrice;
 
-                                                    return (
-                                                        <tr
-                                                            key={product.id}
-                                                            onClick={() =>
-                                                                history.push(
-                                                                    `${match.path}/${product.id}`
-                                                                )
-                                                            }
-                                                        >
-                                                            <td>
-                                                                {product.title}
-                                                            </td>
-                                                            <td>
-                                                                <span
-                                                                    className={cn(
-                                                                        {
-                                                                            'text-danger': isUnexpectedPrice,
-                                                                            'text-success': isExpectedPrice,
-                                                                        }
-                                                                    )}
-                                                                >
-                                                                    {formatPrice(
-                                                                        product.originalPrice
-                                                                    )}
-                                                                    {isUnexpectedPrice && (
-                                                                        <span>
-                                                                            (
-                                                                            {formatPrice(
-                                                                                expectedPrice
-                                                                            )}
-                                                                            )
-                                                                        </span>
-                                                                    )}
-                                                                </span>
-                                                            </td>
-                                                            <td>
-                                                                {product.originalPrice !==
-                                                                    product.price &&
-                                                                    formatPrice(
-                                                                        product.price
-                                                                    )}
-                                                            </td>
-                                                            <td>
-                                                                {elefunPrice &&
-                                                                    formatPrice(
-                                                                        elefunPrice
-                                                                    )}
-                                                            </td>
-                                                            <td>
-                                                                {product.isPublished
-                                                                    ? 'Ja'
-                                                                    : 'Nei'}
-                                                            </td>
-                                                            <td>
-                                                                {product.stock}
-                                                            </td>
-                                                            <td>
-                                                                <Button
-                                                                    className="mr-1"
-                                                                    size="sm"
-                                                                    tag={Link}
-                                                                    to={`${match.path}/${product.id}`}
-                                                                >
-                                                                    Endre
-                                                                </Button>
-                                                                <Button
-                                                                    size="sm"
-                                                                    onClick={(
-                                                                        e
-                                                                    ) => {
-                                                                        e.stopPropagation();
-                                                                        e.preventDefault();
-                                                                        featureProduct(
+                                                        return (
+                                                            <TableRow
+                                                                hover
+                                                                key={product.id}
+                                                                onClick={() =>
+                                                                    history.push(
+                                                                        `${match.path}/${product.id}`
+                                                                    )
+                                                                }
+                                                            >
+                                                                <TableCell>
+                                                                    {
+                                                                        product.title
+                                                                    }
+                                                                </TableCell>
+                                                                <TableCell>
+                                                                    <span
+                                                                        className={cn(
                                                                             {
-                                                                                variables: {
-                                                                                    productId:
-                                                                                        product.id,
-                                                                                },
+                                                                                'text-danger': isUnexpectedPrice,
+                                                                                'text-success': isExpectedPrice,
                                                                             }
-                                                                        ).then(
-                                                                            () =>
-                                                                                setFeaturedTitle(
-                                                                                    product.title
+                                                                        )}
+                                                                    >
+                                                                        {formatPrice(
+                                                                            product.originalPrice
+                                                                        )}
+                                                                        {isUnexpectedPrice && (
+                                                                            <span>
+                                                                                (
+                                                                                {formatPrice(
+                                                                                    expectedPrice
+                                                                                )}
+
                                                                                 )
-                                                                        );
-                                                                    }}
+                                                                            </span>
+                                                                        )}
+                                                                    </span>
+                                                                </TableCell>
+                                                                <TableCell>
+                                                                    {product.originalPrice !==
+                                                                        product.price &&
+                                                                        formatPrice(
+                                                                            product.price
+                                                                        )}
+                                                                </TableCell>
+                                                                <TableCell>
+                                                                    {elefunPrice &&
+                                                                        formatPrice(
+                                                                            elefunPrice
+                                                                        )}
+                                                                </TableCell>
+                                                                <TableCell>
+                                                                    {product.isPublished
+                                                                        ? 'Ja'
+                                                                        : 'Nei'}
+                                                                </TableCell>
+                                                                <TableCell>
+                                                                    {
+                                                                        product.stock
+                                                                    }
+                                                                </TableCell>
+                                                                <TableCell>
+                                                                    <Button
+                                                                        color="primary"
+                                                                        className="mr-1"
+                                                                        size="small"
+                                                                        variant="contained"
+                                                                        tag={
+                                                                            Link
+                                                                        }
+                                                                        to={`${match.path}/${product.id}`}
+                                                                    >
+                                                                        Endre
+                                                                    </Button>
+                                                                    <Button
+                                                                        color="primary"
+                                                                        size="small"
+                                                                        variant="contained"
+                                                                        onClick={(
+                                                                            e
+                                                                        ) => {
+                                                                            e.stopPropagation();
+                                                                            e.preventDefault();
+                                                                            featureProduct(
+                                                                                product.id,
+                                                                                product.title
+                                                                            );
+                                                                        }}
+                                                                    >
+                                                                        Feature
+                                                                    </Button>
+                                                                </TableCell>
+                                                            </TableRow>
+                                                        );
+                                                    })}
+                                                {fetchMore && (
+                                                    <TableRow>
+                                                        <TableCell
+                                                            colspan={100}
+                                                        >
+                                                            <Box
+                                                                display="flex"
+                                                                justifyContent="center"
+                                                            >
+                                                                <Button
+                                                                    color="primary"
+                                                                    variant="contained"
+                                                                    onClick={() =>
+                                                                        fetchMore()
+                                                                    }
                                                                 >
-                                                                    Feature
+                                                                    Last inn
+                                                                    flere
                                                                 </Button>
-                                                            </td>
-                                                        </tr>
-                                                    );
-                                                })}
-                                        </tbody>
-                                    </Table>
-                                    {fetchMore && (
-                                        <div className="d-flex justify-content-center">
-                                            <Button
-                                                color="primary"
-                                                size="lg"
-                                                onClick={() => fetchMore()}
-                                            >
-                                                Last inn flere
-                                            </Button>
-                                        </div>
+                                                            </Box>
+                                                        </TableCell>
+                                                    </TableRow>
+                                                )}
+                                            </TableBody>
+                                        </>
                                     )}
-                                </>
-                            )}
-                        </DefaultHookQuery>
-                    </Card>
-                </Col>
-            </Row>
+                                </DefaultHookQuery>
+                            </Table>
+                        </TableContainer>
+                    </Paper>
+                </Grid>
+            </Grid>
         </Container>
     );
 };

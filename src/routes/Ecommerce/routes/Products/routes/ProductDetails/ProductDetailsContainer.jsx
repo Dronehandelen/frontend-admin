@@ -57,10 +57,6 @@ const ProductDetailsContainer = ({ match }) => {
         refetchQueries: ['GetProduct'],
     });
 
-    React.useEffect(() => {
-        console.log('mount');
-    }, []);
-
     return (
         <DefaultHookQuery
             queryHookData={useQuery(GET_PRODUCT, {
