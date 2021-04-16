@@ -8,8 +8,14 @@ import DefaultHookQuery from '../../../../../../containers/DefaultHookQuery.jsx'
 import {
     Box,
     Button,
+    Checkbox,
     Container,
+    FormControlLabel,
+    FormGroup,
     Grid,
+    IconButton,
+    Menu,
+    MenuItem,
     Paper,
     Table,
     TableBody,
@@ -23,12 +29,22 @@ import {
 const Products = ({
     match,
     queryData,
-    search,
-    setSearch,
+    filters,
+    setFilters,
     featureProduct,
     featuredTitle,
     history,
 }) => {
+    const [anchorEl, setAnchorEl] = React.useState(null);
+
+    const handleClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+
     return (
         <Container>
             <Row>
@@ -48,31 +64,78 @@ const Products = ({
                 <Grid item xs={12}>
                     <Paper component={Box}>
                         <Box padding={2}>
-                            <Box marginBottom={2}>
-                                <Button
-                                    color="primary"
-                                    variant="contained"
-                                    className="mb-2"
-                                    tag={Link}
-                                    to={`${match.path}/new`}
-                                >
-                                    Legg til ny produkt
-                                </Button>
-                            </Box>
-                            <Box marginBottom={2}>
-                                <TextField
-                                    label="Søk"
-                                    className="w-100"
-                                    value={search}
-                                    onChange={(e) => setSearch(e.target.value)}
-                                />
-                                {featuredTitle && (
-                                    <Alert color="success">
-                                        Successfully featured {featuredTitle}
-                                    </Alert>
-                                )}
-                            </Box>
+                            <Button
+                                color="primary"
+                                variant="contained"
+                                component={Link}
+                                to={`${match.path}/new`}
+                            >
+                                Legg til ny produkt
+                            </Button>
                         </Box>
+                        <Box padding={2}>
+                            <Grid container>
+                                <Grid item xs={12}>
+                                    <TextField
+                                        label="Søk"
+                                        className="w-100"
+                                        value={filters.search}
+                                        onChange={(e) =>
+                                            setFilters({
+                                                search: e.target.value,
+                                            })
+                                        }
+                                    />
+                                </Grid>
+                                <Grid item xs={3}>
+                                    <FormControlLabel
+                                        control={
+                                            <Checkbox
+                                                checked={
+                                                    filters.showOnlyPublished
+                                                }
+                                                onChange={() =>
+                                                    setFilters({
+                                                        showOnlyPublished: !filters.showOnlyPublished,
+                                                    })
+                                                }
+                                                inputProps={{
+                                                    'aria-label':
+                                                        'primary checkbox',
+                                                }}
+                                            />
+                                        }
+                                        label="Vis kun publiserte"
+                                    />
+                                </Grid>
+                                <Grid item xs={3}>
+                                    <FormControlLabel
+                                        control={
+                                            <Checkbox
+                                                checked={filters.showPackages}
+                                                onChange={() =>
+                                                    setFilters({
+                                                        showPackages: !filters.showPackages,
+                                                    })
+                                                }
+                                                inputProps={{
+                                                    'aria-label':
+                                                        'primary checkbox',
+                                                }}
+                                            />
+                                        }
+                                        label="Vis pakker"
+                                    />
+                                </Grid>
+                            </Grid>
+                        </Box>
+                        {featuredTitle && (
+                            <Box marginBottom={2} padding={2}>
+                                <Alert color="success">
+                                    Successfully featured {featuredTitle}
+                                </Alert>
+                            </Box>
+                        )}
                         <TableContainer>
                             <Table>
                                 <TableHead>

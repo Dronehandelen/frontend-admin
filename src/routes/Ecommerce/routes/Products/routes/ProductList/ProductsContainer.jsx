@@ -65,41 +65,68 @@ const GET_PRODUCTS = gql`
     }
 `;
 
+const defaultFilters = {
+    search: '',
+    showOnlyPublished: true,
+    showPackages: true,
+};
+
 const ProductsContainer = (props) => {
     const history = useHistory();
     const [featureProduct] = useMutation(FEATURE_PRODUCT);
     const [featuredTitle, setFeaturedTitle] = React.useState(null);
-    const [search, setSearch] = React.useState(() => {
-        return store.get('adminProductsFilters_search') || '';
+    const [filters, setFilters] = React.useState(() => {
+        let storageValue;
+
+        try {
+            storageValue = JSON.parse(store.get('adminProductsFilters'));
+        } catch (e) {}
+
+        const filters = storageValue || defaultFilters;
+
+        const get = (name) => {
+            const value = filters[name];
+            if (value !== undefined) {
+                return value;
+            }
+
+            return defaultFilters[name];
+        };
+
+        return {
+            search: get('search'),
+            showOnlyPublished: get('showOnlyPublished'),
+            showPackages: get('showPackages'),
+        };
     });
-    const debouncedSearch = useDebounce(search, 500);
 
     React.useEffect(() => {
-        store.set('adminProductsFilters_search', search);
-    }, [search]);
+        store.set('adminProductsFilters', JSON.stringify(filters));
+    }, [filters]);
+
+    const debouncedFilters = useDebounce(filters, 500);
 
     return (
         <Products
             {...props}
-            search={search}
-            setSearch={setSearch}
-            debouncedSearch={debouncedSearch}
             featuredTitle={featuredTitle}
             history={history}
+            filters={filters}
+            setFilters={(value) => setFilters({ ...filters, ...value })}
             queryData={usePaginatedQuery(
                 GET_PRODUCTS,
                 'products',
                 {
                     filters: {
-                        onlyPublished: false,
-                        search: debouncedSearch,
-                        shouldShowPackages: true,
+                        search: debouncedFilters.search,
+                        onlyPublished: debouncedFilters.showOnlyPublished,
+                        shouldShowPackages: debouncedFilters.showPackages,
                     },
                 },
                 {
                     count: 20,
                 },
-                debouncedSearch.length === 0 ? 'id' : 'searchRank'
+                debouncedFilters.search.length === 0 ? 'id' : 'searchRank'
             )}
             featureProduct={async (productId, productTitle) => {
                 await featureProduct({
