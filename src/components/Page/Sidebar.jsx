@@ -131,6 +131,7 @@ const Sidebar = () => {
                     <LinkBlockLink to="/ecommerce/products">
                         Produkter
                     </LinkBlockLink>
+                    <LinkBlockLink to="/ecommerce/brands">Merker</LinkBlockLink>
                     <LinkBlockLink to="/ecommerce/old-products">
                         Gamle produkter
                     </LinkBlockLink>

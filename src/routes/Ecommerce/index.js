@@ -8,6 +8,7 @@ import Stats from './routes/Stats';
 import SupplierOrder from './routes/SupplierOrder';
 import StockManager from './routes/StockManager';
 import Categories from './routes/Categories';
+import Brands from './routes/Brands';
 
 const Index = ({ match }) => {
     return (
@@ -29,6 +30,7 @@ const Index = ({ match }) => {
                 component={StockManager}
             />
             <Route path={`${match.path}/categories`} component={Categories} />
+            <Route path={`${match.path}/brands`} component={Brands} />
         </Switch>
     );
 };
