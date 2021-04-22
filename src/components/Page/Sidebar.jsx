@@ -1,177 +1,164 @@
 import React from 'react';
-import styled from 'styled-components';
 import { matchPath, useHistory, useLocation } from 'react-router-dom';
-import cn from 'classnames';
+import {
+    Collapse,
+    List,
+    ListItem,
+    ListItemIcon,
+    ListItemText,
+    makeStyles,
+} from '@material-ui/core';
+import {
+    Assessment,
+    Dashboard,
+    ExpandLess,
+    ExpandMore,
+    LocalOffer,
+} from '@material-ui/icons';
 
-const StyledSidebar = styled.ul`
-    width: 225px;
-    list-style: none;
-    padding-left: 0;
-    background-color: #333333;
-    display: flex;
-    flex-direction: column;
-    color: white;
-    margin: 0;
-`;
-
-const MainListItem = styled.li`
-    padding: 0 15px;
-`;
-
-const Header = styled(MainListItem)`
-    padding-top: 11px;
-    padding-bottom: 11px;
-    color: ${(props) => props.theme.colors.orange};
-`;
-
-const StyledMainLink = styled(MainListItem)`
-    cursor: pointer;
-    padding-top: 7px;
-    padding-bottom: 7px;
-
-    &:hover {
-        background-color: rgba(255, 255, 255, 0.05);
-    }
-
-    &.selected {
-        background-color: ${(props) => props.theme.colors.orange};
-    }
-`;
-
-const LinkBlock = styled.li`
-    cursor: pointer;
-`;
-
-const StyledLinkBlockLink = styled.li`
-    padding: 5px 15px 5px 30px;
-    cursor: pointer;
-
-    &:hover {
-        background-color: rgba(255, 255, 255, 0.05);
-    }
-`;
-
-const LinkBlockList = styled.ul`
-    list-style: none;
-    padding-left: 0;
-    color: #878787;
-    display: none;
-
-    &.expanded {
-        display: block;
-    }
-`;
-
-const Separator = styled(MainListItem)`
-    margin: 10px 0;
-    border-bottom: 1px solid #878787;
-`;
-
-const MainLink = ({ to, onClick, children }) => {
-    const history = useHistory();
-    const location = useLocation();
-
-    return (
-        <StyledMainLink
-            onClick={() => {
-                if (onClick) {
-                    onClick();
-                } else if (to) {
-                    history.push(to);
-                }
-            }}
-            className={cn({
-                selected: matchPath(location.pathname, {
-                    path: to,
-                }),
-            })}
-        >
-            {children}
-        </StyledMainLink>
-    );
-};
-
-const LinkBlockLink = ({ to, children }) => {
-    const history = useHistory();
-
-    return (
-        <StyledLinkBlockLink onClick={() => to && history.push(to)}>
-            {children}
-        </StyledLinkBlockLink>
-    );
-};
+const useStyles = makeStyles((theme) => ({
+    root: {
+        width: '100%',
+        maxWidth: 360,
+        backgroundColor: theme.palette.background.paper,
+    },
+    nested: {
+        paddingLeft: theme.spacing(4),
+    },
+    parentItem: {
+        fontWeight: 'bold',
+    },
+}));
 
 const Sidebar = () => {
+    const classes = useStyles();
+    const history = useHistory();
+    const location = useLocation();
     const [currentlyExpandedName, setCurrentlyExpandedName] = React.useState(
         null
     );
 
+    React.useEffect(() => {
+        setCurrentlyExpandedName(null);
+    }, [location]);
+
+    const links = [
+        { name: 'Dashboard', to: '/dashboard', icon: <Dashboard /> },
+        {
+            name: 'Ecommerce',
+            to: '/ecommerce',
+            icon: <LocalOffer />,
+            subLinks: [
+                { name: 'Produkter', to: '/products' },
+                { name: 'Merker', to: '/brands' },
+                { name: 'Gamle produkter', to: '/old-products' },
+                { name: 'Kategorier', to: '/categories' },
+                { name: 'Ordre', to: '/orders' },
+                { name: 'Artikler', to: '/articles' },
+                { name: 'Stats', to: '/stats' },
+                { name: 'Stock manager', to: '/stock-manager' },
+                { name: 'Supplier orders', to: '/supplier-orders' },
+            ],
+        },
+        {
+            name: 'Stats',
+            to: '/stats',
+            icon: <Assessment />,
+            subLinks: [{ name: 'Søk', to: '/searches' }],
+        },
+    ];
+
     return (
-        <StyledSidebar>
-            <Header>Main</Header>
-            <MainLink to="/dashboard">Dashboard</MainLink>
-            <MainLink
-                onClick={() => {
-                    setCurrentlyExpandedName(
-                        currentlyExpandedName === 'ecommerce'
-                            ? null
-                            : 'ecommerce'
+        <List dense>
+            {links.map(({ name, icon, to, subLinks }) => {
+                const isInPath = !!matchPath(location.pathname, {
+                    path: to,
+                    strict: false,
+                });
+
+                const isExpanded = isInPath || currentlyExpandedName === name;
+
+                if (subLinks) {
+                    return (
+                        <React.Fragment key={name}>
+                            <ListItem
+                                button
+                                selected={isInPath}
+                                onClick={() => {
+                                    setCurrentlyExpandedName(
+                                        currentlyExpandedName === name
+                                            ? null
+                                            : name
+                                    );
+                                }}
+                            >
+                                {icon && <ListItemIcon>{icon}</ListItemIcon>}
+                                <ListItemText
+                                    primary={name}
+                                    primaryTypographyProps={{
+                                        className: classes.parentItem,
+                                    }}
+                                    inset={!icon}
+                                />
+                                {isExpanded ? <ExpandLess /> : <ExpandMore />}
+                            </ListItem>
+                            <Collapse
+                                in={isExpanded}
+                                timeout="auto"
+                                unmountOnExit
+                            >
+                                <List component="div" disablePadding dense>
+                                    {subLinks.map((subLink) => {
+                                        const subTo = to + subLink.to;
+                                        const isInSubPath = !!matchPath(
+                                            location.pathname,
+                                            {
+                                                path: subTo,
+                                                strict: false,
+                                            }
+                                        );
+
+                                        return (
+                                            <ListItem
+                                                key={subLink.name}
+                                                button
+                                                onClick={() =>
+                                                    history.push(subTo)
+                                                }
+                                                selected={isInSubPath}
+                                            >
+                                                <ListItemText
+                                                    primary={subLink.name}
+                                                    inset
+                                                />
+                                            </ListItem>
+                                        );
+                                    })}
+                                </List>
+                            </Collapse>
+                        </React.Fragment>
                     );
-                }}
-                to="/ecommerce"
-            >
-                Ecommerce
-            </MainLink>
-            <LinkBlock>
-                <LinkBlockList
-                    className={cn({
-                        expanded: currentlyExpandedName === 'ecommerce',
-                    })}
-                >
-                    <LinkBlockLink to="/ecommerce/products">
-                        Produkter
-                    </LinkBlockLink>
-                    <LinkBlockLink to="/ecommerce/brands">Merker</LinkBlockLink>
-                    <LinkBlockLink to="/ecommerce/old-products">
-                        Gamle produkter
-                    </LinkBlockLink>
-                    <LinkBlockLink to="/ecommerce/categories">
-                        Kategorier
-                    </LinkBlockLink>
-                    <LinkBlockLink to="/ecommerce/orders">Ordre</LinkBlockLink>
-                    <LinkBlockLink to="/ecommerce/articles">
-                        Artikler
-                    </LinkBlockLink>
-                    <LinkBlockLink to="/ecommerce/stats">Stats</LinkBlockLink>
-                    <LinkBlockLink to="/ecommerce/stock-manager">
-                        Stock manager
-                    </LinkBlockLink>
-                    <LinkBlockLink to="/ecommerce/supplier-orders">
-                        Supplier orders
-                    </LinkBlockLink>
-                </LinkBlockList>
-            </LinkBlock>
-            <MainLink
-                onClick={() => {
-                    setCurrentlyExpandedName(
-                        currentlyExpandedName === 'stats' ? null : 'stats'
-                    );
-                }}
-                to="/stats"
-            >
-                Stats
-            </MainLink>
-            <LinkBlock>
-                <LinkBlockList
-                    className={cn({
-                        expanded: currentlyExpandedName === 'stats',
-                    })}
-                >
-                    <LinkBlockLink to="/stats/searches">Søk</LinkBlockLink>
-                </LinkBlockList>
-            </LinkBlock>
-            <Separator />
-        </StyledSidebar>
+                }
+
+                return (
+                    <ListItem
+                        key={name}
+                        button
+                        selected={isInPath}
+                        onClick={() => history.push(to)}
+                    >
+                        {icon && <ListItemIcon>{icon}</ListItemIcon>}
+                        <ListItemText
+                            primary={name}
+                            primaryTypographyProps={{
+                                className: classes.parentItem,
+                            }}
+                            inset={!icon}
+                        />
+                    </ListItem>
+                );
+            })}
+        </List>
     );
 };
 

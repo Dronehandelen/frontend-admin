@@ -3,6 +3,10 @@ import {
     ThemeContext,
     ThemeProvider as StyledComponentsThemeProvider,
 } from 'styled-components';
+import {
+    createMuiTheme,
+    ThemeProvider as MaterialUiThemeProvider,
+} from '@material-ui/core';
 
 const defaultTheme = {
     colors: {
@@ -10,9 +14,25 @@ const defaultTheme = {
     },
 };
 
+const muiTheme = createMuiTheme({
+    palette: {
+        primary: {
+            main: '#0277BD',
+        },
+        secondary: {
+            main: '#FFA25A',
+        },
+    },
+    typography: {
+        htmlFontSize: 16,
+    },
+});
+
 export const ThemeProvider = ({ theme = defaultTheme, children }) => (
     <StyledComponentsThemeProvider theme={theme}>
-        {children}
+        <MaterialUiThemeProvider theme={muiTheme}>
+            {children}
+        </MaterialUiThemeProvider>
     </StyledComponentsThemeProvider>
 );
 

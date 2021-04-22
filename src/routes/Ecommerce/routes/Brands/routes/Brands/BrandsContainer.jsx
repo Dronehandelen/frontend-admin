@@ -4,7 +4,6 @@ import usePaginatedQuery from '../../../../../../hooks/usePaginatedQuery';
 import Brands from './Brands';
 import { useHistory } from 'react-router-dom';
 import store from 'store';
-import Products from '../../../Products/routes/ProductList/Products';
 
 const query = gql`
     query GetBrands($filters: BrandFilters, $pagination: PaginationInput!) {

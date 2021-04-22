@@ -2,9 +2,7 @@ import React from 'react';
 import {
     Box,
     Button,
-    Checkbox,
     Container,
-    FormControlLabel,
     Grid,
     Paper,
     Table,
@@ -15,12 +13,9 @@ import {
     TableRow,
     TextField,
 } from '@material-ui/core';
-import { Alert, Breadcrumb, BreadcrumbItem, Col, Row } from 'reactstrap';
+import { Breadcrumb, BreadcrumbItem, Col, Row } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import DefaultHookQuery from '../../../../../../containers/DefaultHookQuery';
-import ProductHelper from '../../../../../../helpers/product';
-import cn from 'classnames';
-import formatPrice from '../../../../../../helpers/formatPrice';
 
 const Brands = ({ match, queryData, filters, setFilters, history }) => {
     return (
