@@ -107,10 +107,7 @@ const ProductEventChart = ({ period, from, to }) => {
                     }
                 )}
                 margin={{
-                    top: 5,
-                    right: 20,
-                    left: 10,
-                    bottom: 5,
+                    left: -20,
                 }}
             >
                 <XAxis dataKey="date" />

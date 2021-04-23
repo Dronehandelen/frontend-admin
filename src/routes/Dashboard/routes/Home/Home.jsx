@@ -1,56 +1,156 @@
 import React from 'react';
-import { Col, Container, Row } from 'reactstrap';
+import {
+    Box,
+    Chip,
+    Grid,
+    makeStyles,
+    Paper,
+    Typography,
+} from '@material-ui/core';
 import Card from '../../../../components/Card.jsx';
-import TotalTurnover from './TotalTurnover.jsx';
 import LastReviews from './LastReviews.jsx';
-import WarehouseValue from './WarehouseValue.jsx';
 import LastAddToCart from './LastAddToCart.jsx';
-import ProductEventChart from './productEventChart.jsx';
-import TotalMargin from './TotalMargin.jsx';
+import { DatePicker } from '@material-ui/pickers';
+import moment from 'moment';
+import DefaultHookQuery from '../../../../containers/DefaultHookQuery';
+import TurnoverPaper from './TurnoverPaper';
+import ProductViewPaper from './ProductViewPaper';
+import formatPrice from '../../../../helpers/formatPrice';
 
-const Home = ({ data, from, to }) => {
+const useStyles = makeStyles((theme) => ({
+    quickDateSetters: {
+        '& > *': {
+            marginRight: theme.spacing(0.5),
+        },
+    },
+}));
+
+const Home = ({ queryHookData, from, to, setFrom, setTo }) => {
+    const classes = useStyles();
+
     return (
-        <Container fluid className="mt-4">
-            <Row>
-                <Col md={4}>
-                    <TotalTurnover stats={data.stats} />
-                </Col>
-                <Col md={4}>
-                    <WarehouseValue stats={data.stats} />
-                </Col>
-                <Col md={4}>
-                    <TotalMargin period={data.stats.currentPeriod} />
-                </Col>
-            </Row>
-            <Row>
-                <Col md={8}>
-                    <Card>
-                        <p>
-                            <strong>Product hendelser siste 30 dager</strong>
-                        </p>
-                        <ProductEventChart
-                            period={data.stats.currentPeriod}
-                            from={from}
-                            to={to}
+        <Grid container className="mt-4">
+            <Grid container spacing={1}>
+                <Grid item>
+                    <Box padding={2}>
+                        <DatePicker
+                            variant="inline"
+                            label="Fra"
+                            format="DD.MM.YYYY"
+                            value={from}
+                            onChange={(date) => setFrom(date)}
                         />
-                    </Card>
-                </Col>
-                <Col md={4}>
-                    <Card>
-                        <p>
-                            <strong>Siste anmeldelser</strong>
-                        </p>
-                        <LastReviews reviews={data.lastReviews} />
-                    </Card>
-                    <Card>
-                        <p>
-                            <strong>Siste lagt til handlevogn</strong>
-                        </p>
-                        <LastAddToCart stats={data.stats} />
-                    </Card>
-                </Col>
-            </Row>
-        </Container>
+                        <DatePicker
+                            variant="inline"
+                            label="Til"
+                            format="DD.MM.YYYY"
+                            value={to}
+                            onChange={(date) => setTo(date)}
+                        />
+                    </Box>
+                    <Box
+                        className={classes.quickDateSetters}
+                        padding={2}
+                        paddingTop={0}
+                    >
+                        <Chip
+                            label="Siste uke"
+                            onClick={() => {
+                                setFrom(
+                                    moment().startOf('day').subtract(7, 'days')
+                                );
+                                setTo(moment().add(1, 'day').startOf('day'));
+                            }}
+                        />
+                        <Chip
+                            label="Siste måned"
+                            onClick={() => {
+                                setFrom(
+                                    moment().startOf('day').subtract(1, 'month')
+                                );
+                                setTo(moment().add(1, 'day').startOf('day'));
+                            }}
+                        />
+                        <Chip
+                            label="Siste 3 måneder"
+                            onClick={() => {
+                                setFrom(
+                                    moment().startOf('day').subtract(3, 'month')
+                                );
+                                setTo(moment().add(1, 'day').startOf('day'));
+                            }}
+                        />
+                    </Box>
+                </Grid>
+            </Grid>
+            <DefaultHookQuery queryHookData={queryHookData}>
+                {({ data }) => (
+                    <>
+                        <Grid container spacing={1}>
+                            <Grid item md={4}>
+                                <TurnoverPaper
+                                    from={from}
+                                    to={to}
+                                    data={data}
+                                />
+                            </Grid>
+                            <Grid item md={4}>
+                                <ProductViewPaper
+                                    from={from}
+                                    to={to}
+                                    data={data}
+                                />
+                            </Grid>
+                            <Grid item md={4}>
+                                <Box
+                                    component={Paper}
+                                    padding={2}
+                                    marginBottom={1}
+                                >
+                                    <Box>
+                                        <Typography>
+                                            <strong>Andre tall</strong>
+                                        </Typography>
+                                        <Typography>
+                                            Estimert lagerverdi:{' '}
+                                            {formatPrice(
+                                                data.stats.warehouseValue
+                                            )}
+                                        </Typography>
+                                    </Box>
+                                </Box>
+                                <Box
+                                    component={Paper}
+                                    padding={2}
+                                    marginBottom={1}
+                                >
+                                    <Box marginBottom={2}>
+                                        <Typography>
+                                            <strong>Siste anmeldelser</strong>
+                                        </Typography>
+                                    </Box>
+                                    <LastReviews reviews={data.lastReviews} />
+                                </Box>
+                                <Box
+                                    component={Paper}
+                                    padding={2}
+                                    marginBottom={1}
+                                >
+                                    <Box marginBottom={2}>
+                                        <Typography>
+                                            <strong>
+                                                Siste lagt til handlevogn
+                                            </strong>
+                                        </Typography>
+                                    </Box>
+                                    <LastAddToCart stats={data.stats} />
+                                </Box>
+                            </Grid>
+                        </Grid>
+                    </>
+                )}
+            </DefaultHookQuery>
+        </Grid>
     );
 };
 

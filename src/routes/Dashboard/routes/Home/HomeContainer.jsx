@@ -1,51 +1,57 @@
 import React from 'react';
-import DefaultHookQuery from '../../../../containers/DefaultHookQuery.jsx';
 import Home from './Home.jsx';
 import { gql, useQuery } from '@apollo/client';
 import moment from 'moment';
-import { totalTurnoverFragment } from './TotalTurnover.jsx';
 import { lastReviewsFragment } from './LastReviews.jsx';
-import { warehouseValueFragment } from './WarehouseValue.jsx';
 import { lastAddToCartFragment } from './LastAddToCart.jsx';
 import { dashboardProductEventChartFragment } from './productEventChart.jsx';
-import { totalMarginFragment } from './TotalMargin.jsx';
 
 export const QUERY_HOME_DATA = gql`
     query Stats($from: DateTime!, $to: DateTime!) {
         ...LastReviews
         stats {
-            ...TotalTurnoverFragment
-            ...WarehouseValueFragment
+            warehouseValue
             ...LastAddToCartFragment
             currentPeriod: period(from: $from, to: $to) {
+                turnover
+                estimatedMargin
+                numberOfProductsMissingForEstimation
                 ...DashboardProductEventChartData
-                ...TotalMarginFragment
+                productViewCount: productEventsCount(eventName: "view")
+                byDay {
+                    date
+                    turnover {
+                        count
+                        sum
+                    }
+                }
             }
         }
     }
-    ${totalTurnoverFragment}
     ${lastReviewsFragment}
-    ${warehouseValueFragment}
     ${lastAddToCartFragment}
     ${dashboardProductEventChartFragment}
-    ${totalMarginFragment}
 `;
 
 const StatsContainer = () => {
-    const to = moment().endOf('day');
-    const from = moment().subtract(31, 'days').endOf('day');
+    const [from, setFrom] = React.useState(
+        moment().startOf('day').subtract(31, 'days')
+    );
+    const [to, setTo] = React.useState(moment().add(1, 'day').startOf('day'));
 
     return (
-        <DefaultHookQuery
+        <Home
+            from={from}
+            to={to}
+            setFrom={setFrom}
+            setTo={setTo}
             queryHookData={useQuery(QUERY_HOME_DATA, {
                 variables: {
                     from,
                     to,
                 },
             })}
-        >
-            {({ data }) => <Home data={data} from={from} to={to} />}
-        </DefaultHookQuery>
+        />
     );
 };
 
