@@ -7,7 +7,6 @@ import {
     Paper,
     Typography,
 } from '@material-ui/core';
-import Card from '../../../../components/Card.jsx';
 import LastReviews from './LastReviews.jsx';
 import LastAddToCart from './LastAddToCart.jsx';
 import { DatePicker } from '@material-ui/pickers';

@@ -7,17 +7,20 @@ import { lastAddToCartFragment } from './LastAddToCart.jsx';
 import { dashboardProductEventChartFragment } from './productEventChart.jsx';
 
 export const QUERY_HOME_DATA = gql`
-    query Stats($from: DateTime!, $to: DateTime!) {
+    query Stats(
+        $from: DateTime!
+        $to: DateTime!
+        $startPreviousPeriod: DateTime!
+    ) {
         ...LastReviews
         stats {
             warehouseValue
             ...LastAddToCartFragment
             currentPeriod: period(from: $from, to: $to) {
-                turnover
+                ...PeriodStatsForCompare
                 estimatedMargin
                 numberOfProductsMissingForEstimation
                 ...DashboardProductEventChartData
-                productViewCount: productEventsCount(eventName: "view")
                 byDay {
                     date
                     turnover {
@@ -26,7 +29,14 @@ export const QUERY_HOME_DATA = gql`
                     }
                 }
             }
+            previousPeriod: period(from: $startPreviousPeriod, to: $from) {
+                ...PeriodStatsForCompare
+            }
         }
+    }
+    fragment PeriodStatsForCompare on PeriodStats {
+        turnover
+        productViewCount: productEventsCount(eventName: "view")
     }
     ${lastReviewsFragment}
     ${lastAddToCartFragment}
@@ -39,6 +49,12 @@ const StatsContainer = () => {
     );
     const [to, setTo] = React.useState(moment().add(1, 'day').startOf('day'));
 
+    const startPreviousPeriod = React.useMemo(() => {
+        return from.clone().subtract({
+            milliseconds: Math.abs(to.diff(from)),
+        });
+    }, [from, to]);
+
     return (
         <Home
             from={from}
@@ -49,6 +65,7 @@ const StatsContainer = () => {
                 variables: {
                     from,
                     to,
+                    startPreviousPeriod,
                 },
             })}
         />
