@@ -10,7 +10,7 @@ import {
 } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import Card from '../../../../../../components/Card.jsx';
-import ProductEventChart from '../../../../../Dashboard/routes/Home/productEventChart.jsx';
+import ProductEventChart from './productEventChart';
 import formatPrice from '../../../../../../helpers/formatPrice.js';
 import date from '../../../../../../helpers/date.js';
 import EditPromotion from './components/EditPromotion.jsx';

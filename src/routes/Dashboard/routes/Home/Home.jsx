@@ -15,6 +15,7 @@ import DefaultHookQuery from '../../../../containers/DefaultHookQuery';
 import TurnoverPaper from './TurnoverPaper';
 import ProductViewPaper from './ProductViewPaper';
 import formatPrice from '../../../../helpers/formatPrice';
+import SessionPaper from './SessionPaper';
 
 const useStyles = makeStyles((theme) => ({
     quickDateSetters: {
@@ -92,6 +93,7 @@ const Home = ({ queryHookData, from, to, setFrom, setTo }) => {
                                     to={to}
                                     data={data}
                                 />
+                                <SessionPaper from={from} to={to} data={data} />
                             </Grid>
                             <Grid item md={4}>
                                 <ProductViewPaper

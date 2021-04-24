@@ -1,45 +1,80 @@
 import React from 'react';
-import { Box, Paper, Typography } from '@material-ui/core';
-import ProductEventChart from './productEventChart';
-import getDiffInPresent from '../../../../helpers/getDiffInPresent';
+import { Box } from '@material-ui/core';
+import StatsPaper, {
+    MainNumber,
+    StatsChart,
+} from '../../../../components/StatsPaper';
+import { gql } from '@apollo/client';
+
+export const dashboardProductEventChartFragment = gql`
+    fragment DashboardProductEventChartData on PeriodStats {
+        productViewCountPerDay: productEventsCountPerDay(eventName: "view") {
+            date
+            count
+        }
+        productClickCountPerDay: productEventsCountPerDay(eventName: "click") {
+            date
+            count
+        }
+        productAddToCartCountPerDay: productEventsCountPerDay(
+            eventName: "addToCart"
+        ) {
+            date
+            count
+        }
+    }
+`;
 
 const ProductViewPaper = ({ data, from, to }) => {
-    const diff = getDiffInPresent(
-        data.stats.currentPeriod.productViewCount,
-        data.stats.previousPeriod.productViewCount
-    );
-
     return (
-        <Box component={Paper} padding={2}>
+        <StatsPaper>
             <Box>
-                <Typography>
-                    <strong>Antall produktvisninger</strong>
-                </Typography>
-                <Box display="flex" justifyContent="space-between">
-                    <Box>
-                        <Typography variant="h4">
-                            {data.stats.currentPeriod.productViewCount}
-                        </Typography>
-                    </Box>
-                    {diff !== 0 && (
-                        <Box color={diff > 0 ? 'success.main' : 'error.main'}>
-                            <Typography variant="h5">
-                                {diff > 0 ? '+' : '-'}{' '}
-                                {Math.abs(diff * 100).toFixed(2)}%
-                            </Typography>
-                        </Box>
-                    )}
-                </Box>
+                <MainNumber
+                    title="Antall produktvisninger"
+                    nowNumber={data.stats.currentPeriod.productViewCount}
+                    beforeNumber={data.stats.previousPeriod.productViewCount}
+                />
             </Box>
             <Box marginY={2}>
                 <strong>Produkthendelser over tid</strong>
             </Box>
-            <ProductEventChart
-                period={data.stats.currentPeriod}
+            <StatsChart
+                datasets={[
+                    {
+                        key: 'productView',
+                        color: '#387908',
+                        dataset: data.stats.currentPeriod.productViewCountPerDay.map(
+                            (pvcpd) => ({
+                                date: pvcpd.date,
+                                value: pvcpd.count,
+                            })
+                        ),
+                    },
+                    {
+                        key: 'productClick',
+                        color: 'red',
+                        dataset: data.stats.currentPeriod.productClickCountPerDay.map(
+                            (pvcpd) => ({
+                                date: pvcpd.date,
+                                value: pvcpd.count,
+                            })
+                        ),
+                    },
+                    {
+                        key: 'addToCart',
+                        color: 'blue',
+                        dataset: data.stats.currentPeriod.productAddToCartCountPerDay.map(
+                            (pvcpd) => ({
+                                date: pvcpd.date,
+                                value: pvcpd.count,
+                            })
+                        ),
+                    },
+                ]}
                 from={from}
                 to={to}
             />
-        </Box>
+        </StatsPaper>
     );
 };
 

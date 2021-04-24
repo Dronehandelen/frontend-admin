@@ -4,7 +4,7 @@ import { gql, useQuery } from '@apollo/client';
 import moment from 'moment';
 import { lastReviewsFragment } from './LastReviews.jsx';
 import { lastAddToCartFragment } from './LastAddToCart.jsx';
-import { dashboardProductEventChartFragment } from './productEventChart.jsx';
+import { dashboardProductEventChartFragment } from './ProductViewPaper.jsx';
 
 export const QUERY_HOME_DATA = gql`
     query Stats(
@@ -27,6 +27,9 @@ export const QUERY_HOME_DATA = gql`
                         count
                         sum
                     }
+                    session {
+                        count
+                    }
                 }
             }
             previousPeriod: period(from: $startPreviousPeriod, to: $from) {
@@ -37,6 +40,9 @@ export const QUERY_HOME_DATA = gql`
     fragment PeriodStatsForCompare on PeriodStats {
         turnover
         productViewCount: productEventsCount(eventName: "view")
+        session {
+            count
+        }
     }
     ${lastReviewsFragment}
     ${lastAddToCartFragment}

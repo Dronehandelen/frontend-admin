@@ -1,34 +1,21 @@
 import React from 'react';
-import { Box, Paper, Typography } from '@material-ui/core';
+import { Box } from '@material-ui/core';
 import formatPrice from '../../../../helpers/formatPrice';
-import TurnoverChart from './TurnoverChart';
-import getDiffInPresent from '../../../../helpers/getDiffInPresent';
+import { MainNumber, StatsChart } from '../../../../components/StatsPaper';
+import StatsPaper from '../../../../components/StatsPaper';
 
 const TurnoverPaper = ({ data, from, to }) => {
-    const diff = getDiffInPresent(
-        data.stats.currentPeriod.turnover,
-        data.stats.previousPeriod.turnover
-    );
     return (
-        <Box component={Paper} padding={2}>
+        <StatsPaper>
             <Box>
-                <Typography>
-                    <strong>Omsetning</strong>
-                </Typography>
-                <Box display="flex" justifyContent="space-between">
-                    <Box>
-                        <Typography variant="h4">
-                            {formatPrice(data.stats.currentPeriod.turnover)}
-                        </Typography>
-                    </Box>
-                    {diff !== 0 && (
-                        <Box color={diff > 0 ? 'success.main' : 'error.main'}>
-                            <Typography variant="h5">
-                                {diff > 0 && '+'} {(diff * 100).toFixed(2)}%
-                            </Typography>
-                        </Box>
+                <MainNumber
+                    title="Omsetning"
+                    nowFormatted={formatPrice(
+                        data.stats.currentPeriod.turnover
                     )}
-                </Box>
+                    nowNumber={data.stats.currentPeriod.turnover}
+                    beforeNumber={data.stats.previousPeriod.turnover}
+                />
                 <Box marginTop={1}>
                     Estimert margin:{' '}
                     {formatPrice(data.stats.currentPeriod.estimatedMargin)}
@@ -40,15 +27,20 @@ const TurnoverPaper = ({ data, from, to }) => {
             <Box marginY={2}>
                 <strong>Omsetning over tid</strong>
             </Box>
-            <TurnoverChart
-                dataset={data.stats.currentPeriod.byDay.map((bd) => ({
-                    date: bd.date,
-                    value: bd.turnover.sum,
-                }))}
+            <StatsChart
+                datasets={[
+                    {
+                        key: 'turnover',
+                        dataset: data.stats.currentPeriod.byDay.map((bd) => ({
+                            date: bd.date,
+                            value: bd.turnover.sum,
+                        })),
+                    },
+                ]}
                 from={from}
                 to={to}
             />
-        </Box>
+        </StatsPaper>
     );
 };
 
