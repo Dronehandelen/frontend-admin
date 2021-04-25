@@ -1,17 +1,18 @@
 import React from 'react';
 import { Button, Card, CardBody, CardFooter, Col, Row } from 'reactstrap';
+import { Grid } from '@material-ui/core';
 
 const Images = ({ primaryFileId, images, setState }) => {
-    const onDelete = image => {
+    const onDelete = (image) => {
         setState({
-            images: [...images].filter(i => i.fileId !== image.fileId),
+            images: [...images].filter((i) => i.fileId !== image.fileId),
         });
     };
 
     return (
-        <Row>
-            {images.map(image => (
-                <Col md={4} lg={2} key={image.fileId} className="mb-2">
+        <Grid container spacing={1}>
+            {images.map((image) => (
+                <Grid item md={4} key={image.fileId}>
                     <Card>
                         <CardBody>
                             <img
@@ -43,9 +44,9 @@ const Images = ({ primaryFileId, images, setState }) => {
                             )}
                         </CardFooter>
                     </Card>
-                </Col>
+                </Grid>
             ))}
-        </Row>
+        </Grid>
     );
 };
 

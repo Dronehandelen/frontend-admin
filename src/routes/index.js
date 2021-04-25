@@ -6,6 +6,7 @@ import Dashboard from './Dashboard';
 import Ecommerce from './Ecommerce';
 import Stats from './Stats';
 import Page from '../components/Page/Page.jsx';
+import Products from './Products';
 
 const Index = () => {
     const { isAdmin, isAuthenticating, isAuthenticated } = React.useContext(
@@ -28,6 +29,7 @@ const Index = () => {
         <Page>
             <Switch>
                 <Route path="/dashboard" component={Dashboard} />
+                <Route path="/products" component={Products} />
                 <Route path="/ecommerce" component={Ecommerce} />
                 <Route path="/stats" component={Stats} />
                 <Redirect to="/dashboard" />

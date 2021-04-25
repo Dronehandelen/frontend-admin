@@ -118,7 +118,7 @@ const Products = ({ match }) => {
                                                         key={product.id}
                                                         onClick={() =>
                                                             history.push(
-                                                                `/ecommerce/products/${product.id}`
+                                                                `/products/all/${product.id}`
                                                             )
                                                         }
                                                     >

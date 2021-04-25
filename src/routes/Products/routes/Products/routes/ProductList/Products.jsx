@@ -1,12 +1,13 @@
 import React from 'react';
 import cn from 'classnames';
-import { Alert, Breadcrumb, BreadcrumbItem, Col, Row } from 'reactstrap';
+import { Alert } from 'reactstrap';
 import formatPrice from '../../../../../../helpers/formatPrice.js';
 import ProductHelper from '../../../../../../helpers/product.js';
 import { Link } from 'react-router-dom';
 import DefaultHookQuery from '../../../../../../containers/DefaultHookQuery.jsx';
 import {
     Box,
+    Breadcrumbs,
     Button,
     Checkbox,
     Container,
@@ -20,7 +21,9 @@ import {
     TableHead,
     TableRow,
     TextField,
+    Typography,
 } from '@material-ui/core';
+import appConfig from '../../../../../../config/app';
 
 const Products = ({
     match,
@@ -32,20 +35,16 @@ const Products = ({
     history,
 }) => {
     return (
-        <Container>
-            <Row>
-                <Col>
-                    <Breadcrumb className="pt-3">
-                        <BreadcrumbItem>
-                            <Link to="/">Dronehandelen</Link>
-                        </BreadcrumbItem>
-                        <BreadcrumbItem>
-                            <Link to="/ecommerce">Ecommerce</Link>
-                        </BreadcrumbItem>
-                        <BreadcrumbItem active>Produkter</BreadcrumbItem>
-                    </Breadcrumb>
-                </Col>
-            </Row>
+        <Container maxWidth={false}>
+            <Grid component={Box} container paddingY={2}>
+                <Grid item>
+                    <Breadcrumbs aria-label="breadcrumb">
+                        <Link to="/">{appConfig.appName}</Link>
+                        <Link to="/products">Produkter</Link>
+                        <Typography color="textPrimary">Alle</Typography>
+                    </Breadcrumbs>
+                </Grid>
+            </Grid>
             <Grid container>
                 <Grid item xs={12}>
                     <Paper component={Box}>

@@ -1,20 +1,22 @@
 import React from 'react';
-import { Button, Col, Container, Row } from 'reactstrap';
 import ImagesComponent from '../components/Images';
 import AddImageModal from '../../../../../../../libraries/AddImageModal';
+import { Box, Button, Grid } from '@material-ui/core';
 
 const Images = ({ state, setState }) => {
     const [addImageModalIsOpen, setAddImageModalIsOpen] = React.useState(false);
 
     return (
-        <Container>
-            <Row className="mb-2">
-                <Col md={12}>
-                    <Button onClick={() => setAddImageModalIsOpen(true)}>
-                        Add
-                    </Button>
-                </Col>
-            </Row>
+        <Grid container>
+            <Grid component={Box} item xs={12} marginBottom={1}>
+                <Button
+                    color="primary"
+                    variant="contained"
+                    onClick={() => setAddImageModalIsOpen(true)}
+                >
+                    Add
+                </Button>
+            </Grid>
             <ImagesComponent
                 images={state.images}
                 primaryFileId={state.primaryFileId}
@@ -34,7 +36,7 @@ const Images = ({ state, setState }) => {
                 }}
                 onClose={() => setAddImageModalIsOpen(false)}
             />
-        </Container>
+        </Grid>
     );
 };
 

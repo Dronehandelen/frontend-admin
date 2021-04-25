@@ -4,7 +4,6 @@ import {
     BreadcrumbItem,
     Button,
     Col,
-    Container,
     Row,
     Table,
 } from 'reactstrap';
@@ -14,6 +13,14 @@ import ProductEventChart from './productEventChart';
 import formatPrice from '../../../../../../helpers/formatPrice.js';
 import date from '../../../../../../helpers/date.js';
 import EditPromotion from './components/EditPromotion.jsx';
+import {
+    Box,
+    Breadcrumbs,
+    Container,
+    Grid,
+    Typography,
+} from '@material-ui/core';
+import appConfig from '../../../../../../config/app';
 
 const PromotionPrice = ({
     originalPrice,
@@ -76,31 +83,26 @@ const ProductDetails = ({
     productPromotionMutation,
 }) => {
     return (
-        <Container fluid>
-            <Row>
-                <Col>
-                    <Breadcrumb className="pt-3">
-                        <BreadcrumbItem>
-                            <Link to="/">Dronehandelen</Link>
-                        </BreadcrumbItem>
-                        <BreadcrumbItem>
-                            <Link to="/ecommerce">Ecommerce</Link>
-                        </BreadcrumbItem>
-                        <BreadcrumbItem>
-                            <Link to="/ecommerce/products">Products</Link>
-                        </BreadcrumbItem>
-                        <BreadcrumbItem active>{product.title}</BreadcrumbItem>
-                    </Breadcrumb>
-                </Col>
-            </Row>
-            <Row className="mt-2">
-                <Col>
+        <Container maxWidth={false}>
+            <Grid component={Box} container paddingY={2}>
+                <Grid item>
+                    <Breadcrumbs aria-label="breadcrumb">
+                        <Link to="/">{appConfig.appName}</Link>
+                        <Link to="/products">Produkter</Link>
+                        <Typography color="textPrimary">
+                            {product.title}
+                        </Typography>
+                    </Breadcrumbs>
+                </Grid>
+            </Grid>
+            <Grid container>
+                <Grid item>
                     <h3>{product.title}</h3>
                     <p className="text-muted">{product.shortDescription}</p>
-                </Col>
-            </Row>
-            <Row className="mt-2">
-                <Col md={3}>
+                </Grid>
+            </Grid>
+            <Grid container className="mt-2" spacing={1}>
+                <Grid item md={3}>
                     <Card>
                         <table className="w-100">
                             <tbody>
@@ -125,18 +127,18 @@ const ProductDetails = ({
                             </tbody>
                         </table>
                     </Card>
-                </Col>
-                <Col md={3}>
+                </Grid>
+                <Grid item md={3}>
                     <Card>
                         <p>
                             <strong>Handlinger</strong>
                         </p>
                         <Link to={editUrl}>Endre</Link>
                     </Card>
-                </Col>
-            </Row>
-            <Row>
-                <Col md={6}>
+                </Grid>
+            </Grid>
+            <Grid container spacing={1}>
+                <Grid item md={6}>
                     <Card>
                         <p>
                             <strong>Tilbud</strong>
@@ -188,8 +190,8 @@ const ProductDetails = ({
                             </tbody>
                         </Table>
                     </Card>
-                </Col>
-                <Col md={6}>
+                </Grid>
+                <Grid item md={6}>
                     <Card>
                         <p>
                             <strong>Product hendelser siste 30 dager</strong>
@@ -200,8 +202,8 @@ const ProductDetails = ({
                             to={to}
                         />
                     </Card>
-                </Col>
-            </Row>
+                </Grid>
+            </Grid>
         </Container>
     );
 };

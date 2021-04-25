@@ -45,6 +45,22 @@ const Sidebar = () => {
     const links = [
         { name: 'Dashboard', to: '/dashboard', icon: <Dashboard /> },
         {
+            name: 'Produkter',
+            to: '/products',
+            icon: <LocalOffer />,
+            subLinks: [
+                { name: 'Alle', to: '/all' },
+                { name: 'Gamle', to: '/old' },
+                { name: 'Overvåket', to: '/monitored' },
+            ],
+        },
+        {
+            name: 'Stats',
+            to: '/stats',
+            icon: <Assessment />,
+            subLinks: [{ name: 'Søk', to: '/searches' }],
+        },
+        {
             name: 'Ecommerce',
             to: '/ecommerce',
             icon: <LocalOffer />,
@@ -59,12 +75,6 @@ const Sidebar = () => {
                 { name: 'Stock manager', to: '/stock-manager' },
                 { name: 'Supplier orders', to: '/supplier-orders' },
             ],
-        },
-        {
-            name: 'Stats',
-            to: '/stats',
-            icon: <Assessment />,
-            subLinks: [{ name: 'Søk', to: '/searches' }],
         },
     ];
 
