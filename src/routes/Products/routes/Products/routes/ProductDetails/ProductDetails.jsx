@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-    Breadcrumb,
-    BreadcrumbItem,
-    Button,
-    Col,
-    Row,
-    Table,
-} from 'reactstrap';
+import { Button, Table } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import Card from '../../../../../../components/Card.jsx';
 import ProductEventChart from './productEventChart';

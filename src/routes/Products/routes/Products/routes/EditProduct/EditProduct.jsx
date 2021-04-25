@@ -1,6 +1,5 @@
 import React from 'react';
-import cn from 'classnames';
-import { Alert, Nav, NavItem, NavLink, Spinner } from 'reactstrap';
+import { Alert, Spinner } from 'reactstrap';
 import Images from './tabs/Images.jsx';
 import { Link } from 'react-router-dom';
 import General from './tabs/General';

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Card, CardBody, CardFooter, Col, Row } from 'reactstrap';
+import { Button, Card, CardBody, CardFooter } from 'reactstrap';
 import { Grid } from '@material-ui/core';
 
 const Images = ({ primaryFileId, images, setState }) => {
