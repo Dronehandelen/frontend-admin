@@ -16,6 +16,7 @@ import TurnoverPaper from './TurnoverPaper';
 import ProductViewPaper from './ProductViewPaper';
 import formatPrice from '../../../../helpers/formatPrice';
 import SessionPaper from './SessionPaper';
+import ConversionRatePaper from './ConversionRatePaper';
 
 const useStyles = makeStyles((theme) => ({
     quickDateSetters: {
@@ -97,6 +98,11 @@ const Home = ({ queryHookData, from, to, setFrom, setTo }) => {
                             </Grid>
                             <Grid item md={4}>
                                 <ProductViewPaper
+                                    from={from}
+                                    to={to}
+                                    data={data}
+                                />
+                                <ConversionRatePaper
                                     from={from}
                                     to={to}
                                     data={data}

@@ -65,9 +65,7 @@ const Sidebar = () => {
             to: '/ecommerce',
             icon: <LocalOffer />,
             subLinks: [
-                { name: 'Produkter', to: '/products' },
                 { name: 'Merker', to: '/brands' },
-                { name: 'Gamle produkter', to: '/old-products' },
                 { name: 'Kategorier', to: '/categories' },
                 { name: 'Ordre', to: '/orders' },
                 { name: 'Artikler', to: '/articles' },

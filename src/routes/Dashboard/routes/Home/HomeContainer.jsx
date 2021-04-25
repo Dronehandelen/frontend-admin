@@ -43,6 +43,15 @@ export const QUERY_HOME_DATA = gql`
         session {
             count
         }
+        conversionRate {
+            allSessions {
+                rate
+            }
+            addToCartSessions {
+                rate
+                count
+            }
+        }
     }
     ${lastReviewsFragment}
     ${lastAddToCartFragment}
