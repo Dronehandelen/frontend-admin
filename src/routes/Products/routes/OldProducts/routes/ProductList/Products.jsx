@@ -1,17 +1,23 @@
 import React from 'react';
-import {
-    Breadcrumb,
-    BreadcrumbItem,
-    Col,
-    Container,
-    Row,
-    Table,
-} from 'reactstrap';
 import formatPrice from '../../../../../../helpers/formatPrice.js';
-import { Link, useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import DefaultHookQuery from '../../../../../../containers/DefaultHookQuery.jsx';
 import { gql, useQuery } from '@apollo/client';
-import Card from '../../../../../../components/Card.jsx';
+import {
+    Box,
+    Breadcrumbs,
+    Container,
+    Grid,
+    Paper,
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableRow,
+    Typography,
+} from '@material-ui/core';
+import appConfig from '../../../../../../config/app';
+import ProductRow from './ProductRow';
 
 const GET_PRODUCTS = gql`
     query GetProductsToClear {
@@ -56,37 +62,32 @@ const GET_PRODUCTS = gql`
                 competitorId
                 price
             }
+            isLiquidating
         }
     }
 `;
 
-const Products = ({ match }) => {
-    const history = useHistory();
-
+const Products = () => {
     return (
-        <Container fluid>
-            <Row>
-                <Col>
-                    <Breadcrumb className="pt-3">
-                        <BreadcrumbItem>
-                            <Link to="/">Dronehandelen</Link>
-                        </BreadcrumbItem>
-                        <BreadcrumbItem>
-                            <Link to="/ecommerce">Ecommerce</Link>
-                        </BreadcrumbItem>
-                        <BreadcrumbItem active>Produkter</BreadcrumbItem>
-                    </Breadcrumb>
-                </Col>
-            </Row>
-            <Row>
-                <Col>
-                    <Card>
+        <Container maxWidth={false}>
+            <Grid component={Box} container paddingY={2}>
+                <Grid item>
+                    <Breadcrumbs aria-label="breadcrumb">
+                        <Link to="/">{appConfig.appName}</Link>
+                        <Link to="/products">Produkter</Link>
+                        <Typography color="textPrimary">Gamle</Typography>
+                    </Breadcrumbs>
+                </Grid>
+            </Grid>
+            <Grid container>
+                <Grid item xs={12}>
+                    <Paper component={Box}>
                         <DefaultHookQuery
                             queryHookData={useQuery(GET_PRODUCTS)}
                         >
-                            {({ data }) => (
+                            {({ data, refetch }) => (
                                 <>
-                                    <div className="mb-3">
+                                    <Box padding={2}>
                                         <strong>
                                             Total price of old products:{' '}
                                         </strong>
@@ -100,67 +101,38 @@ const Products = ({ match }) => {
                                                 0
                                             )
                                         )}
-                                    </div>
-                                    <Table hover>
-                                        <thead>
-                                            <tr>
-                                                <th>Tittel</th>
-                                                <th>Pris</th>
-                                                <th>VIP Pris</th>
-                                                <th>Open Pris</th>
-                                                <th>Antall på lager</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
+                                    </Box>
+                                    <Table>
+                                        <TableHead>
+                                            <TableRow>
+                                                <TableCell>Tittel</TableCell>
+                                                <TableCell>Pris</TableCell>
+                                                <TableCell>VIP Pris</TableCell>
+                                                <TableCell>Open Pris</TableCell>
+                                                <TableCell>
+                                                    Antall på lager
+                                                </TableCell>
+                                                <TableCell />
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody>
                                             {data.productsToClear.map(
                                                 (product) => (
-                                                    <tr
+                                                    <ProductRow
                                                         key={product.id}
-                                                        onClick={() =>
-                                                            history.push(
-                                                                `/products/all/${product.id}`
-                                                            )
-                                                        }
-                                                    >
-                                                        <td>{product.title}</td>
-                                                        <td>
-                                                            {formatPrice(
-                                                                product.pricing
-                                                                    .originalPrice
-                                                            )}
-                                                        </td>
-                                                        <td>
-                                                            {product.pricing
-                                                                .vipPromotionPrice &&
-                                                                formatPrice(
-                                                                    product
-                                                                        .pricing
-                                                                        .vipPromotionPrice
-                                                                        .price
-                                                                )}
-                                                        </td>
-                                                        <td>
-                                                            {product.pricing
-                                                                .openPromotionPrice &&
-                                                                formatPrice(
-                                                                    product
-                                                                        .pricing
-                                                                        .openPromotionPrice
-                                                                        .price
-                                                                )}
-                                                        </td>
-                                                        <td>{product.stock}</td>
-                                                    </tr>
+                                                        product={product}
+                                                        refetch={refetch}
+                                                    />
                                                 )
                                             )}
-                                        </tbody>
+                                        </TableBody>
                                     </Table>
                                 </>
                             )}
                         </DefaultHookQuery>
-                    </Card>
-                </Col>
-            </Row>
+                    </Paper>
+                </Grid>
+            </Grid>
         </Container>
     );
 };

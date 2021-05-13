@@ -1,14 +1,13 @@
 import React from 'react';
+import ImageCard from './components/ImageCard';
 import {
     Button,
-    Col,
-    Modal,
-    ModalBody,
-    ModalFooter,
-    ModalHeader,
-    Row,
-} from 'reactstrap';
-import ImageCard from './components/ImageCard';
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+    Grid,
+} from '@material-ui/core';
 
 const AddImageModal = ({
     isOpen,
@@ -23,22 +22,22 @@ const AddImageModal = ({
     const fileInput = React.useRef(null);
 
     return (
-        <Modal isOpen={isOpen} toggle={onClose} size="lg">
-            <input
-                type="file"
-                ref={fileInput}
-                style={{ display: 'none' }}
-                onChange={(event) => {
-                    event.stopPropagation();
-                    event.preventDefault();
-                    onUpload(event.target.files);
-                }}
-                accept="image/jpeg,image/png"
-                multiple={!single}
-            />
-            <ModalHeader toggle={onClose}>Modal title</ModalHeader>
-            <ModalBody>
-                <Row>
+        <Dialog maxWidth="lg" open={isOpen} onClose={onClose} scroll="body">
+            <DialogTitle onClose={onClose}>Legg til bilde</DialogTitle>
+            <DialogContent dividers>
+                <input
+                    type="file"
+                    ref={fileInput}
+                    style={{ display: 'none' }}
+                    onChange={(event) => {
+                        event.stopPropagation();
+                        event.preventDefault();
+                        onUpload(event.target.files);
+                    }}
+                    accept="image/jpeg,image/png"
+                    multiple={!single}
+                />
+                <Grid container>
                     {images.map((image) => {
                         const selected =
                             selectedImageFileIds.findIndex(
@@ -46,7 +45,8 @@ const AddImageModal = ({
                             ) !== -1;
 
                         return (
-                            <Col
+                            <Grid
+                                item
                                 md={2}
                                 key={image.node.fileId}
                                 className="mb-2"
@@ -56,26 +56,27 @@ const AddImageModal = ({
                                     selected={selected}
                                     onClick={() => onImageClick(image)}
                                 />
-                            </Col>
+                            </Grid>
                         );
                     })}
-                </Row>
-            </ModalBody>
-            <ModalFooter>
+                </Grid>
+            </DialogContent>
+            <DialogActions>
+                <Button color="primary" onClick={onClose}>
+                    Cancel
+                </Button>
                 <Button
                     color="primary"
+                    variant="contained"
                     onClick={() => fileInput.current.click()}
                 >
                     Upload new image
                 </Button>
-                <Button color="primary" onClick={onAdd}>
-                    Add
+                <Button color="primary" variant="contained" onClick={onAdd}>
+                    Add to product
                 </Button>
-                <Button color="secondary" onClick={onClose}>
-                    Cancel
-                </Button>
-            </ModalFooter>
-        </Modal>
+            </DialogActions>
+        </Dialog>
     );
 };
 

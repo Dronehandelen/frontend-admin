@@ -110,7 +110,7 @@ const EditProduct = ({
                         <Link to="/">{appConfig.appName}</Link>
                         <Link to="/products">Produkter</Link>
                         {product && (
-                            <Link to={'/products/alle' + product.id}>
+                            <Link to={'/products/all/' + product.id}>
                                 {product.title}
                             </Link>
                         )}
@@ -119,7 +119,7 @@ const EditProduct = ({
                 </Grid>
             </Grid>
             <Grid container>
-                <Grid item>
+                <Grid item xs={12}>
                     <Card>
                         <div>
                             <Button

@@ -1,8 +1,6 @@
 import React from 'react';
-import cn from 'classnames';
 import { Alert } from 'reactstrap';
 import formatPrice from '../../../../../../helpers/formatPrice.js';
-import ProductHelper from '../../../../../../helpers/product.js';
 import { Link } from 'react-router-dom';
 import DefaultHookQuery from '../../../../../../containers/DefaultHookQuery.jsx';
 import {
@@ -125,10 +123,10 @@ const Products = ({
                             <Table>
                                 <TableHead>
                                     <TableRow>
+                                        <TableCell />
                                         <TableCell>Tittel</TableCell>
+                                        <TableCell>Plasering</TableCell>
                                         <TableCell>Pris</TableCell>
-                                        <TableCell>Pris på tilbud</TableCell>
-                                        <TableCell>Elefun pris</TableCell>
                                         <TableCell>Publisert</TableCell>
                                         <TableCell>Antall på lager</TableCell>
                                         <TableCell>Jobber</TableCell>
@@ -141,24 +139,6 @@ const Products = ({
                                                 {data.products.edges
                                                     .map((edge) => edge.node)
                                                     .map((product) => {
-                                                        const wrappedProduct = ProductHelper(
-                                                            product
-                                                        );
-                                                        const expectedPrice = wrappedProduct.expectedPriceBasedOnCompetitors();
-                                                        const elefunPrice = wrappedProduct.competitorPrice(
-                                                            1
-                                                        );
-
-                                                        const isUnexpectedPrice =
-                                                            expectedPrice &&
-                                                            expectedPrice !==
-                                                                product.originalPrice;
-
-                                                        const isExpectedPrice =
-                                                            expectedPrice &&
-                                                            expectedPrice ===
-                                                                product.originalPrice;
-
                                                         return (
                                                             <TableRow
                                                                 hover
@@ -168,48 +148,38 @@ const Products = ({
                                                                         `${match.path}/${product.id}`
                                                                     )
                                                                 }
+                                                                style={{
+                                                                    cursor:
+                                                                        'pointer',
+                                                                }}
                                                             >
+                                                                <TableCell>
+                                                                    <img
+                                                                        style={{
+                                                                            maxHeight: 50,
+                                                                        }}
+                                                                        src={
+                                                                            product
+                                                                                .primaryImage
+                                                                                .url
+                                                                        }
+                                                                        alt=""
+                                                                    />
+                                                                </TableCell>
                                                                 <TableCell>
                                                                     {
                                                                         product.title
                                                                     }
                                                                 </TableCell>
                                                                 <TableCell>
-                                                                    <span
-                                                                        className={cn(
-                                                                            {
-                                                                                'text-danger': isUnexpectedPrice,
-                                                                                'text-success': isExpectedPrice,
-                                                                            }
-                                                                        )}
-                                                                    >
-                                                                        {formatPrice(
-                                                                            product.originalPrice
-                                                                        )}
-                                                                        {isUnexpectedPrice && (
-                                                                            <span>
-                                                                                (
-                                                                                {formatPrice(
-                                                                                    expectedPrice
-                                                                                )}
-
-                                                                                )
-                                                                            </span>
-                                                                        )}
-                                                                    </span>
+                                                                    {
+                                                                        product.warehousePlacement
+                                                                    }
                                                                 </TableCell>
                                                                 <TableCell>
-                                                                    {product.originalPrice !==
-                                                                        product.price &&
-                                                                        formatPrice(
-                                                                            product.price
-                                                                        )}
-                                                                </TableCell>
-                                                                <TableCell>
-                                                                    {elefunPrice &&
-                                                                        formatPrice(
-                                                                            elefunPrice
-                                                                        )}
+                                                                    {formatPrice(
+                                                                        product.price
+                                                                    )}
                                                                 </TableCell>
                                                                 <TableCell>
                                                                     {product.isPublished
