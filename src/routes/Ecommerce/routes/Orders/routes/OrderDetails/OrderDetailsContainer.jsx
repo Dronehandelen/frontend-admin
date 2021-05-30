@@ -4,14 +4,6 @@ import mutationRequest from '../../../../../../helpers/mutationRequest.js';
 import DefaultHookQuery from '../../../../../../containers/DefaultHookQuery.jsx';
 import { gql, useQuery, useMutation } from '@apollo/client';
 
-const UPDATE_ORDER_TRACKING_MUTATION = gql`
-    mutation UpdateOrderTrackingCode($orderId: Int!, $trackingCode: String!) {
-        setTrackingCode(orderId: $orderId, trackingCode: $trackingCode) {
-            id
-        }
-    }
-`;
-
 const SEND_ORDER_TRACKING_MUTATION = gql`
     mutation SendOrderTrackingEmail($orderId: Int!) {
         sendOrderTrackingEmail(orderId: $orderId) {
@@ -152,9 +144,6 @@ const GET_ORDER = gql`
 `;
 
 const OrderDetailsContainer = (props) => {
-    const [updateOrderTrackingCode] = useMutation(
-        UPDATE_ORDER_TRACKING_MUTATION
-    );
     const [sendOrderTrackingEmail] = useMutation(SEND_ORDER_TRACKING_MUTATION);
     const [bookOrderDelivery] = useMutation(BOOK_ORDER_DELIVERY_MUTATION);
     const [recreateOrderDocuments] = useMutation(
@@ -167,11 +156,6 @@ const OrderDetailsContainer = (props) => {
     const [completeBackorder] = useMutation(COMPLETE_BACKORDER_MUTATION);
     const [refundOrder] = useMutation(REFUND_ORDER_MUTATION);
 
-    const [trackingCodeStatus, setTrackingCodeStatus] = React.useState({
-        error: false,
-        loading: false,
-        success: false,
-    });
     const [sendOrderTrackingEmailStatus, setSendOrderTrackingEmailStatus] =
         React.useState({
             error: false,
@@ -230,7 +214,6 @@ const OrderDetailsContainer = (props) => {
                 <OrderDetails
                     {...props}
                     order={data.order}
-                    trackingCodeStatus={trackingCodeStatus}
                     sendOrderTrackingEmailStatus={sendOrderTrackingEmailStatus}
                     bookOrderDeliveryStatus={bookOrderDeliveryStatus}
                     recreateOrderDocumentsStatus={recreateOrderDocumentsStatus}
@@ -240,17 +223,6 @@ const OrderDetailsContainer = (props) => {
                     captureOrderFundsStatus={captureOrderFundsStatus}
                     completeBackorderStatus={completeBackorderStatus}
                     refundOrderStatus={refundOrderStatus}
-                    onSetTrackingCode={(trackingCode) => {
-                        mutationRequest(
-                            setTrackingCodeStatus,
-                            updateOrderTrackingCode,
-                            {
-                                trackingCode,
-                                orderId: data.order.id,
-                            },
-                            () => refetch()
-                        );
-                    }}
                     onSendOrderTrackingEmail={() => {
                         mutationRequest(
                             setSendOrderTrackingEmailStatus,

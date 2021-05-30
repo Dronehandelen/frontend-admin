@@ -5,13 +5,10 @@ import {
     CardBody,
     CardHeader,
     Col,
-    Form,
     FormGroup,
-    Input,
     Row,
     Spinner,
 } from 'reactstrap';
-import ManagedFormGroup from '../../../../../../components/ManagedFormGroup';
 import Order from '../../../../../../components/Order';
 import DeliveryPicker from '../../../../../../components/DeliveryPicker';
 import moment from 'moment';
@@ -40,8 +37,6 @@ import {
 
 const OrderDetails = ({
     order,
-    trackingCodeStatus,
-    onSetTrackingCode,
     bookOrderDeliveryStatus,
     onBookOrderDelivery,
     sendOrderTrackingEmailStatus,
@@ -57,16 +52,6 @@ const OrderDetails = ({
     refundOrderStatus,
     onRefundOrder,
 }) => {
-    const orderTrackingCode = order.deliveryInfo.bring
-        ? order.deliveryInfo.bring.trackingCode
-        : '';
-    const [trackingCode, setTrackingCode] = React.useState('');
-
-    React.useEffect(
-        () => setTrackingCode(orderTrackingCode || ''),
-        [orderTrackingCode]
-    );
-
     const mustBeCaptured =
         [
             orderStatus.WAITING_CONFIRMATION,
