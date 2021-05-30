@@ -64,6 +64,17 @@ const COMPLETE_BACKORDER_MUTATION = gql`
     }
 `;
 
+const REFUND_ORDER_MUTATION = gql`
+    mutation RefundOrder($orderId: Int!, $amount: Int) {
+        refundOrder(orderId: $orderId, amount: $amount) {
+            id
+            status
+            refundedAmountInCent
+            cancelledAt
+        }
+    }
+`;
+
 const GET_ORDER = gql`
     query GetOrder($id: Int!) {
         order(id: $id) {
@@ -154,60 +165,54 @@ const OrderDetailsContainer = (props) => {
     );
     const [captureOrderFunds] = useMutation(CAPTURE_ORDER_FUNDS_MUTATION);
     const [completeBackorder] = useMutation(COMPLETE_BACKORDER_MUTATION);
+    const [refundOrder] = useMutation(REFUND_ORDER_MUTATION);
 
     const [trackingCodeStatus, setTrackingCodeStatus] = React.useState({
         error: false,
         loading: false,
         success: false,
     });
-    const [
-        sendOrderTrackingEmailStatus,
-        setSendOrderTrackingEmailStatus,
-    ] = React.useState({
-        error: false,
-        loading: false,
-        success: false,
-    });
+    const [sendOrderTrackingEmailStatus, setSendOrderTrackingEmailStatus] =
+        React.useState({
+            error: false,
+            loading: false,
+            success: false,
+        });
 
-    const [
-        bookOrderDeliveryStatus,
-        setBookOrderDeliveryStatus,
-    ] = React.useState({
-        error: false,
-        loading: false,
-        success: false,
-    });
+    const [bookOrderDeliveryStatus, setBookOrderDeliveryStatus] =
+        React.useState({
+            error: false,
+            loading: false,
+            success: false,
+        });
 
-    const [
-        recreateOrderDocumentsStatus,
-        setRecreateOrderDocumentsStatus,
-    ] = React.useState({
-        error: false,
-        loading: false,
-        success: false,
-    });
+    const [recreateOrderDocumentsStatus, setRecreateOrderDocumentsStatus] =
+        React.useState({
+            error: false,
+            loading: false,
+            success: false,
+        });
 
-    const [
-        orderReceivedByCustomerStatus,
-        setOrderReceivedByCustomerStatus,
-    ] = React.useState({
-        error: false,
-        loading: false,
-        success: false,
-    });
+    const [orderReceivedByCustomerStatus, setOrderReceivedByCustomerStatus] =
+        React.useState({
+            error: false,
+            loading: false,
+            success: false,
+        });
 
-    const [
-        captureOrderFundsStatus,
-        setCaptureOrderFundsStatus,
-    ] = React.useState({
-        error: false,
-        loading: false,
-        success: false,
-    });
-    const [
-        completeBackorderStatus,
-        setCompleteBackorderStatus,
-    ] = React.useState({
+    const [captureOrderFundsStatus, setCaptureOrderFundsStatus] =
+        React.useState({
+            error: false,
+            loading: false,
+            success: false,
+        });
+    const [completeBackorderStatus, setCompleteBackorderStatus] =
+        React.useState({
+            error: false,
+            loading: false,
+            success: false,
+        });
+    const [refundOrderStatus, setRefundOrderStatus] = React.useState({
         error: false,
         loading: false,
         success: false,
@@ -234,6 +239,7 @@ const OrderDetailsContainer = (props) => {
                     }
                     captureOrderFundsStatus={captureOrderFundsStatus}
                     completeBackorderStatus={completeBackorderStatus}
+                    refundOrderStatus={refundOrderStatus}
                     onSetTrackingCode={(trackingCode) => {
                         mutationRequest(
                             setTrackingCodeStatus,
@@ -306,6 +312,17 @@ const OrderDetailsContainer = (props) => {
                                 orderId: data.order.id,
                             },
                             () => refetch()
+                        );
+                    }}
+                    onRefundOrder={(amount = null) => {
+                        mutationRequest(
+                            setRefundOrderStatus,
+                            refundOrder,
+                            {
+                                orderId: data.order.id,
+                                amount,
+                            },
+                            () => {}
                         );
                     }}
                 />

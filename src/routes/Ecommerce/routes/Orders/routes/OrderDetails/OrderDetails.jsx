@@ -1,20 +1,15 @@
 import React from 'react';
 import {
     Alert,
-    Breadcrumb,
-    BreadcrumbItem,
-    Button,
     Card,
     CardBody,
     CardHeader,
     Col,
-    Container,
     Form,
     FormGroup,
     Input,
     Row,
     Spinner,
-    Table,
 } from 'reactstrap';
 import ManagedFormGroup from '../../../../../../components/ManagedFormGroup';
 import Order from '../../../../../../components/Order';
@@ -27,6 +22,21 @@ import CustomCard from '../../../../../../components/Card';
 import orderStatus from '../../../../../../constants/orderStatus.js';
 import date from '../../../../../../helpers/date.js';
 import CompleteBackorder from './CompleteBackorder.jsx';
+import {
+    Box,
+    Breadcrumbs,
+    Button,
+    CircularProgress,
+    Container,
+    Grid,
+    Paper,
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableRow,
+    Typography,
+} from '@material-ui/core';
 
 const OrderDetails = ({
     order,
@@ -44,17 +54,26 @@ const OrderDetails = ({
     captureOrderFundsStatus,
     onCompleteBackorder,
     completeBackorderStatus,
+    refundOrderStatus,
+    onRefundOrder,
 }) => {
     const orderTrackingCode = order.deliveryInfo.bring
         ? order.deliveryInfo.bring.trackingCode
         : '';
     const [trackingCode, setTrackingCode] = React.useState('');
 
-    React.useEffect(() => setTrackingCode(orderTrackingCode || ''), [
-        orderTrackingCode,
-    ]);
+    React.useEffect(
+        () => setTrackingCode(orderTrackingCode || ''),
+        [orderTrackingCode]
+    );
 
     const mustBeCaptured =
+        [
+            orderStatus.WAITING_CONFIRMATION,
+            orderStatus.WAITING_BACKORDER_CONFIRMATION,
+        ].indexOf(order.status) !== -1;
+
+    const showRefund =
         [
             orderStatus.WAITING_CONFIRMATION,
             orderStatus.WAITING_BACKORDER_CONFIRMATION,
@@ -63,28 +82,24 @@ const OrderDetails = ({
     return (
         <Order order={order}>
             {({ title, products }) => (
-                <Container fluid>
-                    <Row>
-                        <Col>
-                            <Breadcrumb className="pt-3">
-                                <BreadcrumbItem>
-                                    <Link to="/">{appConfig.appName}</Link>
-                                </BreadcrumbItem>
-                                <BreadcrumbItem>
-                                    <Link to="/ecommerce">Ecommerce</Link>
-                                </BreadcrumbItem>
-                                <BreadcrumbItem>
-                                    <Link to="/ecommerce/orders">Ordre</Link>
-                                </BreadcrumbItem>
-                                <BreadcrumbItem active>
+                <Container maxWidth={false}>
+                    <Grid container>
+                        <Grid item>
+                            <Breadcrumbs aria-label="breadcrumb">
+                                <Link to="/">{appConfig.appName}</Link>
+                                <Link to="/ecommerce">Ecommerce</Link>
+                                <Link to="/ecommerce/orders">Ordre</Link>
+                                <Typography color="textPrimary">
                                     {order.id}
-                                </BreadcrumbItem>
-                            </Breadcrumb>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col>{title}</Col>
-                    </Row>
+                                </Typography>
+                            </Breadcrumbs>
+                        </Grid>
+                    </Grid>
+                    <Grid container>
+                        <Grid item>
+                            <Box marginTop={2}>{title}</Box>
+                        </Grid>
+                    </Grid>
                     <Row className="mt-3">
                         <Col md={6}>
                             <CustomCard>
@@ -270,31 +285,32 @@ const OrderDetails = ({
                             </CustomCard>
                         </Col>
                     </Row>
-                    <Row className="mt-3">
-                        <Col md={4}>
-                            <CustomCard>
-                                <h3>Timeline</h3>
+                    <Grid container spacing={1}>
+                        <Grid item md={4}>
+                            <Paper>
                                 <Table>
-                                    <thead>
-                                        <tr>
-                                            <th>Hendelse</th>
-                                            <th>Dato</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell>Hendelse</TableCell>
+                                            <TableCell>Dato</TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
                                         {order.events.map(
                                             ({ event, happenedAt }, index) => (
-                                                <tr key={index}>
-                                                    <td>{event}</td>
-                                                    <td>
+                                                <TableRow key={index}>
+                                                    <TableCell>
+                                                        {event}
+                                                    </TableCell>
+                                                    <TableCell>
                                                         {date.niceDateTime(
                                                             happenedAt
                                                         )}
-                                                    </td>
-                                                </tr>
+                                                    </TableCell>
+                                                </TableRow>
                                             )
                                         )}
-                                    </tbody>
+                                    </TableBody>
                                 </Table>
                                 {order.status ===
                                     orderStatus.WAITING_FOR_BACKORDER_PRODUCTS && (
@@ -307,85 +323,94 @@ const OrderDetails = ({
                                         }
                                     />
                                 )}
-                            </CustomCard>
-                        </Col>
-                        <Col md={8}>
+                            </Paper>
+                        </Grid>
+                        <Grid item md={8}>
+                            <Paper component={Box}>
+                                <Table>
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell>Navn</TableCell>
+                                            <TableCell colSpan={2}>
+                                                Beskrivelse
+                                            </TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {showRefund && (
+                                            <TableRow>
+                                                <TableCell>Avbestill</TableCell>
+                                                <TableCell>
+                                                    Tilbakebetaler hele beløpet
+                                                    og bestillingen får status
+                                                    kansellert. MERK: Husk å
+                                                    oppdater varelager
+                                                </TableCell>
+                                                <TableCell>
+                                                    <Button
+                                                        color="secondary"
+                                                        variant="contained"
+                                                        onClick={() => {
+                                                            onRefundOrder();
+                                                        }}
+                                                    >
+                                                        {refundOrderStatus.loading ? (
+                                                            <CircularProgress />
+                                                        ) : (
+                                                            'Avbestill'
+                                                        )}
+                                                    </Button>
+                                                </TableCell>
+                                            </TableRow>
+                                        )}
+                                        <TableRow>
+                                            <TableCell>
+                                                Lag nye dokumenter
+                                            </TableCell>
+                                            <TableCell />
+                                            <TableCell width="250">
+                                                <Button
+                                                    color="primary"
+                                                    variant="contained"
+                                                    onClick={
+                                                        onRecreateOrderDocuments
+                                                    }
+                                                >
+                                                    {recreateOrderDocumentsStatus.loading ? (
+                                                        <CircularProgress />
+                                                    ) : (
+                                                        'Lag nye dokumenter'
+                                                    )}
+                                                </Button>
+                                                {recreateOrderDocumentsStatus.success && (
+                                                    <Alert
+                                                        className="mt-2"
+                                                        color="success"
+                                                    >
+                                                        Ferdig!
+                                                    </Alert>
+                                                )}
+                                                {recreateOrderDocumentsStatus.error && (
+                                                    <Alert
+                                                        className="mt-2"
+                                                        color="danger"
+                                                    >
+                                                        Noe skjedde!
+                                                    </Alert>
+                                                )}
+                                            </TableCell>
+                                        </TableRow>
+                                    </TableBody>
+                                </Table>
+                            </Paper>
+                        </Grid>
+                    </Grid>
+                    <Row className="mt-3">
+                        <Col md={12}>
                             <Row>
                                 {order.deliveryInfo.bring && (
                                     <>
-                                        <Col md={6} className="mb-2">
-                                            <Card>
-                                                <CardHeader>
-                                                    Sporingsnummer
-                                                </CardHeader>
-                                                <CardBody>
-                                                    <p>
-                                                        <strong>
-                                                            bringPostalOfficeId:{' '}
-                                                        </strong>
-                                                        {
-                                                            order.deliveryInfo
-                                                                .bring
-                                                                .postalOfficeId
-                                                        }
-                                                    </p>
-                                                    <Form
-                                                        onSubmit={(e) => {
-                                                            e.stopPropagation();
-                                                            e.preventDefault();
-                                                            onSetTrackingCode(
-                                                                trackingCode
-                                                            );
-                                                        }}
-                                                    >
-                                                        <ManagedFormGroup
-                                                            error={
-                                                                trackingCodeStatus.error
-                                                            }
-                                                            inputKey="trackingCode"
-                                                        >
-                                                            {(errors) => (
-                                                                <Input
-                                                                    type="text"
-                                                                    name="trackingCode"
-                                                                    placeholder="Sporingsnummer"
-                                                                    value={
-                                                                        trackingCode
-                                                                    }
-                                                                    onChange={(
-                                                                        e
-                                                                    ) =>
-                                                                        setTrackingCode(
-                                                                            e
-                                                                                .target
-                                                                                .value
-                                                                        )
-                                                                    }
-                                                                    invalid={
-                                                                        !!errors
-                                                                    }
-                                                                />
-                                                            )}
-                                                        </ManagedFormGroup>
-                                                        <Button
-                                                            type="submit"
-                                                            color="primary"
-                                                        >
-                                                            Lagre
-                                                        </Button>
-                                                    </Form>
-                                                    {trackingCodeStatus.success && (
-                                                        <Alert
-                                                            className="mt-2"
-                                                            color="success"
-                                                        >
-                                                            Lagret!
-                                                        </Alert>
-                                                    )}
-                                                </CardBody>
-                                            </Card>
-                                        </Col>
-                                        <Col md={6}>
+                                        <Col md={4}>
                                             <Card>
                                                 <CardHeader>
                                                     Send sporing e-post
@@ -409,6 +434,7 @@ const OrderDetails = ({
                                                         .trackingCode && (
                                                         <Button
                                                             color="primary"
+                                                            variant="contained"
                                                             onClick={
                                                                 onSendOrderTrackingEmail
                                                             }
@@ -429,40 +455,7 @@ const OrderDetails = ({
                                         </Col>
                                     </>
                                 )}
-                                <Col md={6}>
-                                    <Card>
-                                        <CardHeader>
-                                            Lag nye dokumenter
-                                        </CardHeader>
-                                        <CardBody>
-                                            <Button
-                                                color="primary"
-                                                onClick={
-                                                    onRecreateOrderDocuments
-                                                }
-                                            >
-                                                Lag nye dokumenter
-                                            </Button>
-                                            {recreateOrderDocumentsStatus.success && (
-                                                <Alert
-                                                    className="mt-2"
-                                                    color="success"
-                                                >
-                                                    Ferdig!
-                                                </Alert>
-                                            )}
-                                            {recreateOrderDocumentsStatus.error && (
-                                                <Alert
-                                                    className="mt-2"
-                                                    color="danger"
-                                                >
-                                                    Noe skjedde!
-                                                </Alert>
-                                            )}
-                                        </CardBody>
-                                    </Card>
-                                </Col>
-                                <Col md={6}>
+                                <Col md={4}>
                                     <Card>
                                         <CardHeader>Leveringsdato</CardHeader>
                                         <CardBody>
@@ -476,6 +469,7 @@ const OrderDetails = ({
                                             )}
                                             <FormGroup>
                                                 <Button
+                                                    variant="contained"
                                                     onClick={() =>
                                                         onOrderReceivedByCustomer(
                                                             moment().toISOString()
@@ -504,7 +498,7 @@ const OrderDetails = ({
                                         </CardBody>
                                     </Card>
                                 </Col>
-                                <Col md={6}>
+                                <Col md={4}>
                                     <Card
                                         color={
                                             mustBeCaptured
@@ -527,6 +521,7 @@ const OrderDetails = ({
                                                     </p>
                                                     <Button
                                                         color="primary"
+                                                        variant="contained"
                                                         onClick={() =>
                                                             onCaptureOrderFunds()
                                                         }
