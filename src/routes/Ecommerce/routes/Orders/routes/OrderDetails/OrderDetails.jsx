@@ -62,6 +62,7 @@ const OrderDetails = ({
         [
             orderStatus.WAITING_CONFIRMATION,
             orderStatus.WAITING_BACKORDER_CONFIRMATION,
+            orderStatus.WAITING_FOR_BACKORDER_PRODUCTS,
         ].indexOf(order.status) !== -1;
 
     return (
