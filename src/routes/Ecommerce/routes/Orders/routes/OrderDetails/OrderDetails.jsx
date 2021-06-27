@@ -10,7 +10,6 @@ import {
     Spinner,
 } from 'reactstrap';
 import Order from '../../../../../../components/Order';
-import DeliveryPicker from '../../../../../../components/DeliveryPicker';
 import moment from 'moment';
 import Date from '../../../../../../helpers/date.js';
 import { Link } from 'react-router-dom';
