@@ -143,24 +143,25 @@ const OrderDetails = ({
                                                 </td>
                                             </tr>
                                         )}
-                                        {order.deliveryInfo.bring &&
-                                            order.deliveryInfo.bring
-                                                .trackingCode && (
-                                                <tr>
-                                                    <td>
-                                                        <strong>Sporing</strong>
-                                                    </td>
-                                                    <td>
-                                                        <a
-                                                            href={`https://sporing.posten.no/sporing/${order.deliveryInfo.bring.trackingCode}`}
-                                                            target="_blank"
-                                                            rel="noopener noreferrer"
-                                                        >
-                                                            Se pakkesporing
-                                                        </a>
-                                                    </td>
-                                                </tr>
-                                            )}
+                                        {order.deliveryInfo.trackingUrl && (
+                                            <tr>
+                                                <td>
+                                                    <strong>Sporing</strong>
+                                                </td>
+                                                <td>
+                                                    <a
+                                                        href={
+                                                            order.deliveryInfo
+                                                                .trackingUrl
+                                                        }
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                    >
+                                                        Se pakkesporing
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        )}
                                     </tbody>
                                 </Table>
                             </CustomCard>
@@ -178,14 +179,14 @@ const OrderDetails = ({
                                                 <div>
                                                     {
                                                         order.deliveryInfo
-                                                            .deliveryTypeInfo
-                                                            .name
+                                                            .supplier.name
                                                     }
                                                 </div>
                                                 <div>
-                                                    {order.deliveryInfo.bring &&
-                                                        order.deliveryInfo.bring
-                                                            .typeInfo.name}
+                                                    {order.deliveryInfo
+                                                        .product &&
+                                                        order.deliveryInfo
+                                                            .product.name}
                                                 </div>
                                             </td>
                                         </tr>
@@ -218,54 +219,30 @@ const OrderDetails = ({
                                                 <div>{order.email}</div>
                                             </td>
                                         </tr>
-                                        {order.deliveryInfo.bring &&
-                                            order.deliveryInfo.bring
-                                                .trackingCode && (
-                                                <tr>
-                                                    <td>
-                                                        <strong>
-                                                            Sporingsnummer
-                                                        </strong>
-                                                    </td>
-                                                    <td>
-                                                        <div>
-                                                            {
+                                        {order.deliveryInfo.shippingLabel && (
+                                            <tr>
+                                                <td>
+                                                    <strong>
+                                                        Sendingsetikett
+                                                    </strong>
+                                                </td>
+                                                <td>
+                                                    <div>
+                                                        <a
+                                                            href={
                                                                 order
                                                                     .deliveryInfo
-                                                                    .bring
-                                                                    .trackingCode
+                                                                    .shippingLabel
                                                             }
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            )}
-                                        {order.deliveryInfo.bring &&
-                                            order.deliveryInfo.bring
-                                                .shippingLabel && (
-                                                <tr>
-                                                    <td>
-                                                        <strong>
-                                                            Sendingsetikett
-                                                        </strong>
-                                                    </td>
-                                                    <td>
-                                                        <div>
-                                                            <a
-                                                                href={
-                                                                    order
-                                                                        .deliveryInfo
-                                                                        .bring
-                                                                        .shippingLabel
-                                                                }
-                                                                target="_blank"
-                                                                rel="noopener noreferrer"
-                                                            >
-                                                                Etikett
-                                                            </a>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            )}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                        >
+                                                            Etikett
+                                                        </a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        )}
                                     </tbody>
                                 </Table>
                             </CustomCard>
@@ -394,7 +371,7 @@ const OrderDetails = ({
                     <Row className="mt-3">
                         <Col md={12}>
                             <Row>
-                                {order.deliveryInfo.bring && (
+                                {order.deliveryInfo.trackingUrl && (
                                     <>
                                         <Col md={4}>
                                             <Card>
@@ -402,32 +379,21 @@ const OrderDetails = ({
                                                     Send sporing e-post
                                                 </CardHeader>
                                                 <CardBody>
-                                                    {!order.deliveryInfo.bring
-                                                        .trackingCode && (
-                                                        <p>
-                                                            Du må få et
-                                                            sporingsnummer før
-                                                            du kan sende e-post
-                                                        </p>
-                                                    )}
                                                     {order.shippingEmailSentAt && (
                                                         <p>
                                                             Du har allerede
                                                             sendt en e-post
                                                         </p>
                                                     )}
-                                                    {order.deliveryInfo.bring
-                                                        .trackingCode && (
-                                                        <Button
-                                                            color="primary"
-                                                            variant="contained"
-                                                            onClick={
-                                                                onSendOrderTrackingEmail
-                                                            }
-                                                        >
-                                                            Send
-                                                        </Button>
-                                                    )}
+                                                    <Button
+                                                        color="primary"
+                                                        variant="contained"
+                                                        onClick={
+                                                            onSendOrderTrackingEmail
+                                                        }
+                                                    >
+                                                        Send
+                                                    </Button>
                                                     {sendOrderTrackingEmailStatus.success && (
                                                         <Alert
                                                             className="mt-2"
@@ -542,24 +508,6 @@ const OrderDetails = ({
                             </Row>
                         </Col>
                     </Row>
-                    {[
-                        appConfig.deliveryTypes.BRING,
-                        appConfig.deliveryTypes.BRING_SP,
-                        appConfig.deliveryTypes.BRING_PIP,
-                    ].indexOf(order.deliveryType) !== -1 &&
-                        order.deliveryInfo.bring && (
-                            <Row className="mt-2">
-                                <Col md={12}>
-                                    <DeliveryPicker
-                                        order={order}
-                                        deliveryInfo={order.deliveryInfo.bring}
-                                        onOrder={onBookOrderDelivery}
-                                        status={bookOrderDeliveryStatus}
-                                    />
-                                </Col>
-                            </Row>
-                        )}
-
                     <Row className="mt-2">
                         <Col>{products(true)}</Col>
                     </Row>

@@ -121,18 +121,16 @@ const GET_ORDER = gql`
             }
             deliveryType
             deliveryInfo {
-                deliveryTypeInfo {
+                supplier {
                     id
                     name
                 }
-                bring {
-                    typeInfo {
-                        id
-                        name
-                    }
-                    postalOfficeId
-                    trackingCode
-                    shippingLabel
+                trackingUrl
+                postalOfficeId
+                shippingLabel
+                product {
+                    id
+                    name
                 }
             }
             events {

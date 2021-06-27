@@ -70,23 +70,22 @@ const Order = ({ order, children }) => {
                                 </td>
                             </tr>
                         )}
-                        {order.deliveryInfo.bring &&
-                            order.deliveryInfo.bring.trackingCode && (
-                                <tr>
-                                    <td>
-                                        <strong>Sporing</strong>
-                                    </td>
-                                    <td>
-                                        <a
-                                            href={`https://sporing.posten.no/sporing/${order.deliveryInfo.bring.trackingCode}`}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                        >
-                                            Se pakkesporing
-                                        </a>
-                                    </td>
-                                </tr>
-                            )}
+                        {order.deliveryInfo.trackingUrl && (
+                            <tr>
+                                <td>
+                                    <strong>Sporing</strong>
+                                </td>
+                                <td>
+                                    <a
+                                        href={order.deliveryInfo.trackingUrl}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    >
+                                        Se pakkesporing
+                                    </a>
+                                </td>
+                            </tr>
+                        )}
                     </tbody>
                 </Table>
             </CardBody>
@@ -108,12 +107,10 @@ const Order = ({ order, children }) => {
                                 <strong>Leveringsmåte</strong>
                             </td>
                             <td>
+                                <div>{order.deliveryInfo.supplier.name}</div>
                                 <div>
-                                    {order.deliveryInfo.deliveryTypeInfo.name}
-                                </div>
-                                <div>
-                                    {order.deliveryInfo.bring &&
-                                        order.deliveryInfo.bring.typeInfo.name}
+                                    {order.deliveryInfo.product &&
+                                        order.deliveryInfo.product.name}
                                 </div>
                             </td>
                         </tr>
