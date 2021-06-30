@@ -11,8 +11,7 @@ const getOrderStatus = (order) => {
 
     if (order.status === orderStatus.WAITING_CONFIRMATION) {
         return {
-            text:
-                'Summen er låst på kunden sitt kort. Lager må bekreftes før kortet belastes',
+            text: 'Summen er låst på kunden sitt kort. Lager må bekreftes før kortet belastes',
             canCaptureFunds: true,
         };
     }
@@ -30,21 +29,10 @@ const getOrderStatus = (order) => {
         };
     }
 
-    const isBring =
-        order.deliveryType === appConfig.deliveryTypes.BRING &&
-        order.deliveryInfo.bring;
-
-    if (isBring) {
-        if (order.deliveryInfo.bring.trackingCode === null) {
-            return {
-                text: 'Bestill levering med Bring',
-            };
-        }
-
+    if (order.deliveryInfo.trackingUrl) {
         if (order.shippingEmailSentAt === null) {
             return {
-                text:
-                    'Lever pakken til posten og send e-post om at pakken er levert.',
+                text: 'Lever pakken til posten og send e-post om at pakken er levert.',
                 canSendShippingConfirmationEmail: true,
             };
         }
@@ -52,10 +40,10 @@ const getOrderStatus = (order) => {
 
     if (!order.packageReceivedAt) {
         return {
-            text: isBring
+            text: order.deliveryInfo.trackingUrl
                 ? 'Kunden venter på pakken.'
                 : 'Kunden må hente pakken sin.',
-            canMarkAsReceived: isBring
+            canMarkAsReceived: order.deliveryInfo.trackingUrl
                 ? moment(order.succeededAt).isBefore(
                       moment().subtract(1, 'month')
                   )

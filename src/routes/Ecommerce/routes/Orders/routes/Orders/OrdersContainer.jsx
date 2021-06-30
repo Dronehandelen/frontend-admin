@@ -27,6 +27,7 @@ const GET_ORDERS = gql`
                     shippingEmailSentAt
                     deliveryType
                     deliveryInfo {
+                        trackingUrl
                         bring {
                             type
                             postalOfficeId
