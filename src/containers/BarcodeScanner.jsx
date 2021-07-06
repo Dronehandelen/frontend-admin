@@ -30,7 +30,7 @@ const BarcodeScanner = ({ children }) => {
                     processEnd();
                     code = '';
                     reading = false;
-                }, 200);
+                }, 400);
             }
         });
     }, []);
