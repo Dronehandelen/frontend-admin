@@ -34,9 +34,8 @@ const Sidebar = () => {
     const classes = useStyles();
     const history = useHistory();
     const location = useLocation();
-    const [currentlyExpandedName, setCurrentlyExpandedName] = React.useState(
-        null
-    );
+    const [currentlyExpandedName, setCurrentlyExpandedName] =
+        React.useState(null);
 
     React.useEffect(() => {
         setCurrentlyExpandedName(null);
@@ -52,6 +51,7 @@ const Sidebar = () => {
                 { name: 'Alle', to: '/all' },
                 { name: 'Gamle', to: '/old' },
                 { name: 'Overvåket', to: '/monitored' },
+                { name: 'Scan', to: '/scan' },
             ],
         },
         {

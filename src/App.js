@@ -17,6 +17,7 @@ import { Col, Container, Row } from 'reactstrap';
 import ApolloClient from './helpers/apolloClient.js';
 import { ThemeProvider } from './containers/ThemeProvider.jsx';
 import moment from 'moment';
+import BarcodeScanner from './containers/BarcodeScanner';
 
 const apolloClient = new ApolloClient();
 
@@ -38,12 +39,14 @@ const App = () => (
                 <ApolloProvider client={apolloClient.apolloClient}>
                     <ScrollToTop>
                         <AuthProvider>
-                            <MuiPickersUtilsProvider
-                                utils={MomentUtils}
-                                libInstance={moment}
-                            >
-                                <Routes />
-                            </MuiPickersUtilsProvider>
+                            <BarcodeScanner>
+                                <MuiPickersUtilsProvider
+                                    utils={MomentUtils}
+                                    libInstance={moment}
+                                >
+                                    <Routes />
+                                </MuiPickersUtilsProvider>
+                            </BarcodeScanner>
                         </AuthProvider>
                     </ScrollToTop>
                 </ApolloProvider>

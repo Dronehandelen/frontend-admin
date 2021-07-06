@@ -205,6 +205,7 @@ const ProductPicker = ({
     maxCount = null,
     children,
     colProps,
+    minimal = false,
 }) => {
     const [search, setSearch] = React.useState(() => '');
     const [isOpen, setIsOpen] = React.useState(false);
@@ -217,11 +218,13 @@ const ProductPicker = ({
         <Container fluid>
             {!children && (
                 <>
-                    <Row className="mt-3">
-                        <Col>
-                            <h2>Valgte produkter</h2>
-                        </Col>
-                    </Row>
+                    {!minimal && (
+                        <Row className="mt-3">
+                            <Col>
+                                <h2>Valgte produkter</h2>
+                            </Col>
+                        </Row>
+                    )}
                     <SelectedProducts
                         selectedProducts={selectedProducts}
                         productMetadataRenderer={productMetadataRenderer}
@@ -300,11 +303,12 @@ const ProductPicker = ({
                                                                 product.id
                                                         )
                                                     ) {
-                                                        newValue = newValue.filter(
-                                                            (itemValue) =>
-                                                                itemValue.id !==
-                                                                product.id
-                                                        );
+                                                        newValue =
+                                                            newValue.filter(
+                                                                (itemValue) =>
+                                                                    itemValue.id !==
+                                                                    product.id
+                                                            );
                                                     } else {
                                                         if (
                                                             newValue.length ===
