@@ -27,10 +27,9 @@ const BarcodeScanner = ({ children }) => {
             if (!reading) {
                 reading = true;
                 setTimeout(() => {
-                    processEnd();
                     code = '';
                     reading = false;
-                }, 400);
+                }, 500);
             }
         });
     }, []);
