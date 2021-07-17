@@ -68,6 +68,7 @@ const Sidebar = () => {
                 { name: 'Merker', to: '/brands' },
                 { name: 'Kategorier', to: '/categories' },
                 { name: 'Ordre', to: '/orders' },
+                { name: 'Sjekk bestillinger', to: '/check-orders' },
                 { name: 'Artikler', to: '/articles' },
                 { name: 'Stats', to: '/stats' },
                 { name: 'Stock manager', to: '/stock-manager' },

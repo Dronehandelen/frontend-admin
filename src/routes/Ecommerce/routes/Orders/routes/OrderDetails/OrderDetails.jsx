@@ -36,8 +36,6 @@ import {
 
 const OrderDetails = ({
     order,
-    bookOrderDeliveryStatus,
-    onBookOrderDelivery,
     sendOrderTrackingEmailStatus,
     onSendOrderTrackingEmail,
     recreateOrderDocumentsStatus,
