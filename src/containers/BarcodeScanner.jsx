@@ -2,6 +2,9 @@ import React from 'react';
 
 import BarcodeContext from '../contexts/barcode';
 
+let offset = 1;
+let listeners = {};
+
 const BarcodeScanner = ({ children }) => {
     const [currentBarcode, setCurrentBarcode] = React.useState(null);
 
@@ -39,6 +42,10 @@ const BarcodeScanner = ({ children }) => {
             return;
         }
 
+        Object.values(listeners).forEach(
+            (listener) => listener && listener(currentBarcode)
+        );
+
         const timeout = setTimeout(() => setCurrentBarcode(null), 200);
         return () => clearTimeout(timeout);
     }, [currentBarcode]);
@@ -47,6 +54,20 @@ const BarcodeScanner = ({ children }) => {
         <BarcodeContext.Provider
             value={{
                 currentBarcode,
+                addListener: React.useCallback((clb) => {
+                    const id = String(offset);
+
+                    listeners = {
+                        ...listeners,
+                        [id]: clb,
+                    };
+
+                    offset = offset + 1;
+                    return id;
+                }, []),
+                clearListener: React.useCallback((id) => {
+                    delete listeners[id];
+                }, []),
             }}
         >
             {children}

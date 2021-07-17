@@ -62,24 +62,12 @@ const Order = ({
         [checkedProducts, order, setCheckedProducts]
     );
 
-    const { currentBarcode } = React.useContext(barcode);
-
-    React.useEffect(() => {
-        if (currentBarcode !== null) {
-            const orderProduct = order.orderProducts.find(
-                (orderProduct) => orderProduct.product.gtin === currentBarcode
-            );
-
-            if (orderProduct) {
-                check(orderProduct.product.id, 1);
-            }
-        }
-    }, [currentBarcode, order]);
+    const { addListener, clearListener } = React.useContext(barcode);
 
     const handleCloseProductToUpdate = React.useCallback(() => {
         setProductToUpdate(null);
         setGtin(null);
-    });
+    }, [setProductToUpdate, setGtin]);
 
     const ready = React.useMemo(() => {
         return !order.orderProducts.some(
@@ -87,6 +75,21 @@ const Order = ({
                 orderProduct.amount !== checkedProducts[orderProduct.product.id]
         );
     }, [order, checkedProducts]);
+
+    React.useEffect(() => {
+        const listener = addListener((barcode) => {
+            console.log(barcode);
+            const orderProduct = order.orderProducts.find(
+                (orderProduct) => orderProduct.product.gtin === barcode
+            );
+
+            if (orderProduct) {
+                check(orderProduct.product.id, 1);
+            }
+        });
+
+        return () => clearListener(listener);
+    }, [order, check, addListener, clearListener]);
 
     return (
         <>
@@ -172,21 +175,23 @@ const Order = ({
                     <Card>
                         <Table>
                             <TableHead>
-                                <TableCell>
-                                    <strong>Bilde</strong>
-                                </TableCell>
-                                <TableCell>
-                                    <strong>Navn og beskrivelse</strong>
-                                </TableCell>
-                                <TableCell>
-                                    <strong>Plasering</strong>
-                                </TableCell>
-                                <TableCell>
-                                    <strong>Antall</strong>
-                                </TableCell>
-                                <TableCell>
-                                    <strong>Handlinger</strong>
-                                </TableCell>
+                                <TableRow>
+                                    <TableCell>
+                                        <strong>Bilde</strong>
+                                    </TableCell>
+                                    <TableCell>
+                                        <strong>Navn og beskrivelse</strong>
+                                    </TableCell>
+                                    <TableCell>
+                                        <strong>Plasering</strong>
+                                    </TableCell>
+                                    <TableCell>
+                                        <strong>Antall</strong>
+                                    </TableCell>
+                                    <TableCell>
+                                        <strong>Handlinger</strong>
+                                    </TableCell>
+                                </TableRow>
                             </TableHead>
                             <TableBody>
                                 {order.orderProducts.map((orderProduct) => {
