@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box, Button, Container, Grid } from '@material-ui/core';
 import Order from './Order';
+import CreateHovedSendingButton from '../../../../components/CreateHovedSendingButton';
 
 const Navigator = ({ orders, refetch }) => {
     const [orderId, setOrderId] = React.useState(null);
@@ -93,6 +94,13 @@ const Navigator = ({ orders, refetch }) => {
                                 refetch();
                             }}
                         />
+                    )}
+                    {!orderId && (
+                        <Box marginTop={3}>
+                            <p>Ingen bestillinger igjen å sjekke</p>
+                            <h2>Quick links</h2>
+                            <CreateHovedSendingButton fullWidth={false} />
+                        </Box>
                     )}
                 </Grid>
             </Grid>

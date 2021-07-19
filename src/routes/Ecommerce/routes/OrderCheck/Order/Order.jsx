@@ -17,6 +17,8 @@ import {
 } from '@material-ui/core';
 import { Alert } from 'reactstrap';
 import barcode from '../../../../../contexts/barcode';
+import postnordProducts from '../../../../../constants/postnordProducts';
+import CreateHovedSendingButton from '../../../../../components/CreateHovedSendingButton';
 
 const Order = ({
     order,
@@ -30,6 +32,8 @@ const Order = ({
         order.deliveryInfo.supplier.id === 'get_self' ||
         order.deliveryInfo.shippingLabel
     );
+    const canBookHovedSending =
+        order.deliveryInfo.product.id === postnordProducts.MYPACK_HOME_SMALL;
 
     const [productToUpdate, setProductToUpdate] = React.useState(null);
     const [gtin, setGtin] = React.useState('');
@@ -78,7 +82,6 @@ const Order = ({
 
     React.useEffect(() => {
         const listener = addListener((barcode) => {
-            console.log(barcode);
             const orderProduct = order.orderProducts.find(
                 (orderProduct) => orderProduct.product.gtin === barcode
             );
@@ -153,6 +156,9 @@ const Order = ({
                                     >
                                         Bekreft bestilling
                                     </Button>
+                                )}
+                                {canBookHovedSending && (
+                                    <CreateHovedSendingButton />
                                 )}
                                 <Button
                                     size="large"
