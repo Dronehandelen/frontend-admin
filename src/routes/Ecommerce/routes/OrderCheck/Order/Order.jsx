@@ -33,6 +33,7 @@ const Order = ({
         order.deliveryInfo.shippingLabel
     );
     const canBookHovedSending =
+        order.deliveryInfo.product &&
         order.deliveryInfo.product.id === postnordProducts.MYPACK_HOME_SMALL;
 
     const [productToUpdate, setProductToUpdate] = React.useState(null);
