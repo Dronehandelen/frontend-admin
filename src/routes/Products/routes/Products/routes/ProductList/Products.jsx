@@ -22,6 +22,7 @@ import {
     Typography,
 } from '@material-ui/core';
 import appConfig from '../../../../../../config/app';
+import LiquidateButton from '../../../../../../components/LiquidateButton';
 
 const Products = ({
     match,
@@ -79,7 +80,8 @@ const Products = ({
                                                 }
                                                 onChange={() =>
                                                     setFilters({
-                                                        showOnlyPublished: !filters.showOnlyPublished,
+                                                        showOnlyPublished:
+                                                            !filters.showOnlyPublished,
                                                     })
                                                 }
                                                 inputProps={{
@@ -98,7 +100,8 @@ const Products = ({
                                                 checked={filters.showPackages}
                                                 onChange={() =>
                                                     setFilters({
-                                                        showPackages: !filters.showPackages,
+                                                        showPackages:
+                                                            !filters.showPackages,
                                                     })
                                                 }
                                                 inputProps={{
@@ -149,8 +152,7 @@ const Products = ({
                                                                     )
                                                                 }
                                                                 style={{
-                                                                    cursor:
-                                                                        'pointer',
+                                                                    cursor: 'pointer',
                                                                 }}
                                                             >
                                                                 <TableCell>
@@ -206,6 +208,7 @@ const Products = ({
                                                                     </Button>
                                                                     <Button
                                                                         color="primary"
+                                                                        className="mr-1"
                                                                         size="small"
                                                                         variant="contained"
                                                                         onClick={(
@@ -221,6 +224,15 @@ const Products = ({
                                                                     >
                                                                         Feature
                                                                     </Button>
+                                                                    <LiquidateButton
+                                                                        productId={
+                                                                            product.id
+                                                                        }
+                                                                        show={
+                                                                            !product.isLiquidating
+                                                                        }
+                                                                        size="small"
+                                                                    />
                                                                 </TableCell>
                                                             </TableRow>
                                                         );

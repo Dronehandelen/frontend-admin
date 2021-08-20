@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Table } from 'reactstrap';
+import { Table } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import Card from '../../../../../../components/Card.jsx';
 import ProductEventChart from './productEventChart';
@@ -9,11 +9,13 @@ import EditPromotion from './components/EditPromotion.jsx';
 import {
     Box,
     Breadcrumbs,
+    Button,
     Container,
     Grid,
     Typography,
 } from '@material-ui/core';
 import appConfig from '../../../../../../config/app';
+import LiquidateButton from '../../../../../../components/LiquidateButton';
 
 const PromotionPrice = ({
     originalPrice,
@@ -37,12 +39,14 @@ const PromotionPrice = ({
                         <>
                             <Button
                                 color="primary"
+                                variant="contained"
                                 onClick={() => setEdit(true)}
                             >
                                 Endre
                             </Button>
                             <Button
                                 color="danger"
+                                variant="contained"
                                 className="ml-1"
                                 onClick={() => productPromotionMutation(null)}
                             >
@@ -51,7 +55,11 @@ const PromotionPrice = ({
                         </>
                     )}
                     {!promotionPrice && (
-                        <Button color="primary" onClick={() => setEdit(true)}>
+                        <Button
+                            color="primary"
+                            variant="contained"
+                            onClick={() => setEdit(true)}
+                        >
                             Lag
                         </Button>
                     )}
@@ -126,7 +134,13 @@ const ProductDetails = ({
                         <p>
                             <strong>Handlinger</strong>
                         </p>
-                        <Link to={editUrl}>Endre</Link>
+                        <Box>
+                            <Link to={editUrl}>Endre</Link>
+                        </Box>
+                        <LiquidateButton
+                            productId={product.id}
+                            show={!product.isLiquidating}
+                        />
                     </Card>
                 </Grid>
             </Grid>

@@ -12,6 +12,7 @@ const GET_PRODUCT = gql`
             title
             shortDescription
             stock
+            isLiquidating
             pricing {
                 price
                 originalPrice
@@ -67,7 +68,7 @@ const ProductDetailsContainer = ({ match }) => {
                 },
             })}
         >
-            {({ data, refetch }) => (
+            {({ data }) => (
                 <ProductDetails
                     product={data.product}
                     editUrl={match.url + '/edit'}

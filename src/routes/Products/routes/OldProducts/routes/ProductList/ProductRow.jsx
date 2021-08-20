@@ -1,33 +1,11 @@
 import React from 'react';
-import {
-    Button,
-    CircularProgress,
-    TableCell,
-    TableRow,
-} from '@material-ui/core';
+import { TableCell, TableRow } from '@material-ui/core';
 import formatPrice from '../../../../../../helpers/formatPrice';
-import mutationRequest from '../../../../../../helpers/mutationRequest';
-import { gql, useMutation } from '@apollo/client';
 import { useHistory } from 'react-router-dom';
-
-const LIQUIDATE_MUTATION = gql`
-    mutation LiquidateMutation($productId: Int!) {
-        liquidateProduct(productId: $productId) {
-            id
-            isLiquidating
-        }
-    }
-`;
+import LiquidateButton from '../../../../../../components/LiquidateButton';
 
 const ProductRow = ({ product, refetch }) => {
     const history = useHistory();
-    const [liquidateProduct] = useMutation(LIQUIDATE_MUTATION);
-
-    const [liquidateProductStatus, setLiquidateProductStatus] = React.useState({
-        error: false,
-        loading: false,
-        success: false,
-    });
 
     return (
         <TableRow
@@ -51,30 +29,12 @@ const ProductRow = ({ product, refetch }) => {
                     textAlign: 'right',
                 }}
             >
-                {liquidateProductStatus.loading ? (
-                    <CircularProgress />
-                ) : (
-                    !product.isLiquidating && (
-                        <Button
-                            color="primary"
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                e.preventDefault();
-
-                                mutationRequest(
-                                    setLiquidateProductStatus,
-                                    liquidateProduct,
-                                    {
-                                        productId: product.id,
-                                    },
-                                    () => refetch()
-                                );
-                            }}
-                        >
-                            Liquidate
-                        </Button>
-                    )
-                )}
+                <LiquidateButton
+                    productId={product.id}
+                    onUpdated={() => refetch()}
+                    show={!product.isLiquidating}
+                    hideLiquidated
+                />
             </TableCell>
         </TableRow>
     );

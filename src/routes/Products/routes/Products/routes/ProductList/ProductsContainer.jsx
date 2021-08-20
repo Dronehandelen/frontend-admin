@@ -39,6 +39,7 @@ const GET_PRODUCTS = gql`
                     isPublished
                     stock
                     createdAt
+                    isLiquidating
                     images {
                         fileId
                         url
